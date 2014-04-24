@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.vin.app2.app.Comment" >
+    
+    <item android:id="@+id/action_hl"
+        android:title="这些亮了"
+        android:orderInCategory="100"
+        android:showAsAction="always" />
+</menu>

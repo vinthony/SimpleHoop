@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/RL01"
+    android:layout_width="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:paddingBottom="4dip"
+    android:paddingLeft="12dip"
+    android:paddingRight="12dip"
+    >
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        </ListView>
+    <ImageView
+        android:layout_marginTop="10dp"
+        android:id="@+id/thumb"
+        android:layout_width="75px"
+        android:layout_height="75px"
+        android:layout_alignParentLeft="true"
+        android:scaleType="fitXY"
+        />
+    <TextView
+        android:text="@string/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/title"
+        android:textSize="18dp"
+        android:layout_below="@+id/thumb"
+        />
+    <TextView
+        android:textSize="16dp"
+        android:text="@string/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/content"
+        android:layout_marginRight="16dp"
+        android:layout_toRightOf="@+id/thumb"
+        />
+    <TextView
+        android:text="@string/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/time"
+        android:layout_below="@+id/title"
+        android:layout_toRightOf="@+id/commentNum"
+        />
+    <TextView
+        android:text="@string/loading"
+        android:layout_width="30pt"
+        android:layout_height="wrap_content"
+        android:id="@+id/commentNum"
+        android:layout_below="@+id/title"
+        />
+
+</RelativeLayout>

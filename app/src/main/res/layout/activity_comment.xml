@@ -1,0 +1,41 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.vin.app2.app.Comment">
+
+    <ListView
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="55dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/comment_ge"
+        android:layout_centerHorizontal="true"
+        ></ListView>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/hupo"
+        >
+        <EditText
+            android:layout_marginLeft="20dp"
+            android:layout_width="310dp"
+            android:layout_height="wrap_content"
+            android:hint="增加评论"
+            android:id="@+id/commentET"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/admireIMG"
+            />
+        <ImageButton
+            android:id="@+id/sendMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_drawer"
+            android:layout_toRightOf="@+id/commentET"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>

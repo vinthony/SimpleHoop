@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.vin.app2.app.showNews"
+    >
+
+    <item android:id="@+id/action_settings"
+        android:title="分享"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom" />
+
+    <item android:id="@+id/comment"
+        android:title="@string/comment"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:actionViewClass="android.widget.Plain"
+        />
+
+</menu>
