@@ -66,6 +66,7 @@
             android:layout_marginLeft="15dp"
             />
         <EditText
+            android:cursorVisible="false"
             android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:hint="增加评论"

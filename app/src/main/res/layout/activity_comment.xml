@@ -21,8 +21,9 @@
         android:background="@color/hupo"
         >
         <EditText
+            android:cursorVisible="false"
             android:layout_marginLeft="20dp"
-            android:layout_width="310dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:hint="增加评论"
             android:id="@+id/commentET"
@@ -31,6 +32,7 @@
             />
         <ImageButton
             android:id="@+id/sendMessage"
+            android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_drawer"

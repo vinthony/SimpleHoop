@@ -173,9 +173,8 @@ public class UserTopic extends Activity implements ActionBar.TabListener {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_user_topic, container, false);
-            final ListView lv = (ListView)getActivity().findViewById(R.id.user_topic);
             JsonMaker jsonMaker = new JsonMaker(ITEM_ARR[getArguments().getInt(ARG_SECTION_NUMBER)-1],getActivity());
-            jsonMaker.setJson(rootView,TabFragment.newInstance(getArguments().getInt(ARG_SECTION_NUMBER)),getActivity().getApplicationContext(),lv);
+            jsonMaker.setJson(null,null,null,null);
             return rootView;
         }
     }

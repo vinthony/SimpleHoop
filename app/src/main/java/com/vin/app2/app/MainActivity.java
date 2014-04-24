@@ -25,7 +25,7 @@ public class MainActivity extends Activity
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-    private static String[] itemsArr={"hot","china","soccer","cba","nba","sports","tennis","f1","other"};
+    private static String[] itemsArr={"hot","china","soccer","cba","nba","sports","tennis","f1","bbs_hot"};
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -181,37 +181,40 @@ public class MainActivity extends Activity
         @Override
         public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                 Bundle savedInstanceState) {
+                final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-            final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            final ListView lv = (ListView) rootView.findViewById(R.id.listView);
-            refreshableView=(RefreshableView)rootView.findViewById(R.id.refreshable_view);
-            refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    try{
-                        JsonMaker jm=null;
+                final ListView lv = (ListView) rootView.findViewById(R.id.listView);
+
+                refreshableView = (RefreshableView) rootView.findViewById(R.id.refreshable_view);
+
+                refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
+                    @Override
+                    public void onRefresh() {
                         try {
+                            JsonMaker jm = null;
+                            try {
 
-                            jm=new JsonMaker("voice",itemsArr[getArguments().getInt(ARG_SECTION_NUMBER)-1],fragment.getActivity().getApplicationContext());
+                                jm = new JsonMaker("voice", itemsArr[getArguments().getInt(ARG_SECTION_NUMBER) - 1], fragment.getActivity().getApplicationContext());
+                            } catch (Exception e) {
+                                Log.e("HUPOERROR", "JSONmaker error");
+                            }
+                            jm.setJson(rootView, fragment, fragment.getActivity().getApplicationContext(), lv);
+                            refreshableView.finishRefreshing();
                         } catch (Exception e) {
-                            Log.e("HUPOERROR","JSONmaker error");
+                            e.printStackTrace();
                         }
-                        jm.setJson(rootView,fragment,fragment.getActivity().getApplicationContext(),lv);
-                        refreshableView.finishRefreshing();
-                    }catch (Exception e){
-                        e.printStackTrace();
                     }
+                }, 0);
+                JsonMaker jm = null;
+                try {
+                    jm = new JsonMaker("voice", itemsArr[getArguments().getInt(ARG_SECTION_NUMBER) - 1], fragment.getActivity().getApplicationContext());
+                    if(getArguments().getInt(ARG_SECTION_NUMBER)==9){
+                        jm.setFlag("bbs");
+                    }
+                } catch (Exception e) {
+                    Log.e("HUPOERROR", "JSONmaker error");
                 }
-            },0);
-            JsonMaker jm=null;
-            try {
-
-                jm=new JsonMaker("voice",itemsArr[getArguments().getInt(ARG_SECTION_NUMBER)-1],fragment.getActivity().getApplicationContext());
-            } catch (Exception e) {
-                Log.e("HUPOERROR","JSONmaker error");
-            }
-            jm.setJson(rootView,fragment,fragment.getActivity().getApplicationContext(),lv);
-
+                jm.setJson(rootView, fragment, fragment.getActivity().getApplicationContext(), lv);
             return rootView;
         }
 

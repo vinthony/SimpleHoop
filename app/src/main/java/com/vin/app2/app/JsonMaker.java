@@ -136,7 +136,7 @@ public class JsonMaker {
     }
     public JsonMaker(String oitem,String ux,Activity a){//getPages
         mActivity=a;
-        if(oitem.equals("apage")){
+        if(oitem.equals("apage")||oitem.equals("comment")){
             item=oitem;
             url=ux;
             params.put("item",item);
@@ -241,9 +241,9 @@ public class JsonMaker {
     private void getUserTopicMain(String result,final Activity a){
         try{
             final JSONArray j = new JSONArray(result);
-           // Fragment f= a.getFragmentManager().findFragmentById(R.layout.fragment_user_topic);
+            Fragment f= a.getFragmentManager().findFragmentById(R.layout.fragment_user_topic);
             final ArrayList<HashMap<String,String>> m = Model.userTopicModel(j);
-            final ListView lv_main =(ListView)a.findViewById(R.id.user_topic);
+            final ListView lv_main =(ListView)f.getView().findViewById(R.id.user_topic);
             a.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -257,9 +257,9 @@ public class JsonMaker {
     private void getUserTopicRe(String result,final Activity a){
         try{
             final JSONArray j = new JSONArray(result);
-            // Fragment f= a.getFragmentManager().findFragmentById(R.layout.fragment_user_topic);
+            Fragment f= a.getFragmentManager().findFragmentById(R.layout.fragment_user_topic);
             final ArrayList<HashMap<String,String>> m = Model.userTopicReModel(j);
-           final ListView lv_main =(ListView)a.findViewById(R.id.user_topic);
+           final ListView lv_main =(ListView)f.getView().findViewById(R.id.user_topic);
             a.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -421,7 +421,6 @@ public class JsonMaker {
     private void getNewsPage(String result,final Activity a){
         try {
             JSONObject j = new JSONObject(result);
-            Log.d(HUPO+"url",j.getString("url"));
             HashMap<String,String> article = new HashMap<String, String>();
             article=Model.articleModel(article,j.getString("title"),j.getString("article"),j.getString("img"),j.getString("supportNum"),j.getString("url"));
             final TextView tv_article= (TextView)a.findViewById(R.id.article);
@@ -431,7 +430,6 @@ public class JsonMaker {
             final ImageButton ib_supportNum = (ImageButton)a.findViewById(R.id.admireIMG);
             final ImageButton ib_sendMessage = (ImageButton)a.findViewById(R.id.sendMessage);
             final EditText et_message = (EditText)a.findViewById(R.id.commentET);
-            Log.d(HUPO+"title",article.get("title"));
             final HashMap<String, String> finalArticle = article;
             mActivity.runOnUiThread(new Runnable() {
                 @Override
@@ -497,30 +495,41 @@ public class JsonMaker {
     }
     private void getNewsList(String result,View rV, final ListView lv, final Fragment f, final Context c){
         try{
-            JSONObject j = new JSONObject(result);
-            JSONArray jsonArr = j.getJSONArray("news");
-            al=Model.newsListModel(jsonArr,al);
+            if(flag.equals("bbs")){
+                JSONArray j = new JSONArray(result);
+                al=Model.bbsListModel(j);
+            }else{
+                JSONObject j = new JSONObject(result);
+                JSONArray jsonArr = j.getJSONArray("news");
+                al=Model.newsListModel(jsonArr,al);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
         rV.post(new Runnable() {
             @Override
             public void run() {
-                MyAdapter sa= new MyAdapter(c,al,R.layout.list_items,new String[]{"title","content","time","photo","commentNum","admireNum"},new int[]{R.id.title,R.id.content,R.id.time,R.id.thumb,R.id.commentNum,R.id.admireNum});
-                lv.setAdapter(sa);
-                lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Toast.makeText(c,"正在努力加载中"+ al.get(i).get("link") +"。。。。。 QAQ",Toast.LENGTH_SHORT).show();
-                        Intent it = new Intent(c,NewsPage.class);
-                        Bundle bundle =new Bundle();
-                        bundle.putString("url",al.get(i).get("link"));
-                        it.putExtras(bundle);
-                        f.getActivity().startActivity(it);
+                if(flag.equals("bbs")){
+                    MyAdapter sa = new MyAdapter(c, al, R.layout.list_bbs_items, new String[]{"title", "info", "parent"}, new int[]{R.id.title, R.id.info, R.id.parent});
+                    lv.setAdapter(sa);
+                }else {
+                    MyAdapter sa = new MyAdapter(c, al, R.layout.list_items, new String[]{"title", "content", "time", "photo", "commentNum", "admireNum"}, new int[]{R.id.title, R.id.content, R.id.time, R.id.thumb, R.id.commentNum, R.id.admireNum});
+                    lv.setAdapter(sa);
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            Toast.makeText(c, "正在努力加载中" + al.get(i).get("link") + "。。。。。 QAQ", Toast.LENGTH_SHORT).show();
+                            Intent it = new Intent(c, NewsPage.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("url", al.get(i).get("link"));
+                            it.putExtras(bundle);
+                            f.getActivity().startActivity(it);
 
-                    }
-                });
-            }
+
+                        }
+                    });
+                }
+                }
         });
     }
     private void getLoginInformation(String result, final Activity a){

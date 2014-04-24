@@ -49,6 +49,10 @@
             android:name="com.vin.app2.app.UserTopic"
             android:label="@string/title_activity_user_topic" >
         </activity>
+        <activity
+            android:name="com.vin.app2.app.BBS"
+            android:label="@string/title_activity_bbs" >
+        </activity>
     </application>
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->

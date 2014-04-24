@@ -71,9 +71,10 @@ public class NewsPage extends Activity {
             return true;
         }
         if (id == R.id.comment){
-            //todo admire the article
+
             Intent i = new Intent(NewsPage.this,Comment.class);
             i.putExtra("url",url);
+            Log.d("HUPOurl",url);
             startActivity(i);
             return true;
         }

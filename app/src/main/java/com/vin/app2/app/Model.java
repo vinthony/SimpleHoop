@@ -110,4 +110,19 @@ public class Model {
         }
         return re;
     }
+
+    public static ArrayList<HashMap<String, String>> bbsListModel(JSONArray j)throws JSONException {
+        ArrayList<HashMap<String, String>> al = new ArrayList<HashMap<String, String>>();
+        for (int i = 0; i < j.length(); i++) {
+            JSONObject o = (JSONObject) j.opt(i);
+            HashMap<String, String> m = new HashMap<String, String>();
+            m.put("title", o.getString("title"));
+            m.put("href", o.getString("href"));
+            m.put("info", o.getString("info"));
+            m.put("parent", o.getString("parent"));
+            m.put("parentHref", o.getString("parentHref"));
+            al.add(m);
+        }
+        return al;
+    }
 }
