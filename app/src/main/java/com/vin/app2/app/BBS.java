@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 
 public class BBS extends Activity implements ActionBar.OnNavigationListener {
@@ -28,9 +27,52 @@ public class BBS extends Activity implements ActionBar.OnNavigationListener {
 
         // Set up the action bar to show a dropdown list.
         final ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-
+        getActionBar().setBackgroundDrawable(this.getBaseContext().getResources().getDrawable(R.drawable.BackBar));
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().show();
+        actionBar.setTitle(getResources().getStringArray(R.array.bbs_items)[getIntent().getIntExtra("type",0)]);
+        int type=getIntent().getIntExtra("type",0);
+        String [] list={};
+        switch (type){
+            case 1:
+                list=getResources().getStringArray(R.array.bbs_ganbiya_items);
+                break;
+            case 2:
+                list=getResources().getStringArray(R.array.bbs_nba_items);
+                break;
+            case 3:
+                list=getResources().getStringArray(R.array.bbs_cba_items);
+                break;
+            case 4:
+                list=getResources().getStringArray(R.array.bbs_equitment_items);
+                break;
+            case 5:
+                list=getResources().getStringArray(R.array.bbs_soccer_items);
+                break;
+            case 6:
+                list=getResources().getStringArray(R.array.bbs_zonghe_items);
+                break;
+            case 7:
+                list=getResources().getStringArray(R.array.bbs_szjs_items);
+                break;
+            case 8:
+                list=getResources().getStringArray(R.array.bbs_cpzx_items);
+                break;
+            case 9:
+                list=getResources().getStringArray(R.array.bbs_zwgl_items);
+                break;
+            case 10:
+                list=getResources().getStringArray(R.array.bbs_games_items);
+                break;
+            case 0:
+            default:
+                JsonMaker jsonMaker=new JsonMaker("my_bbs_items",BBS.this);
+                jsonMaker.setJson(null,null,null,null);
+                //list=jsonMaker.getResult("my_bbs_items");
+                break;
+        }
         // Set up the dropdown list navigation in the action bar.
         actionBar.setListNavigationCallbacks(
                 // Specify a SpinnerAdapter to populate the dropdown list.
@@ -38,11 +80,7 @@ public class BBS extends Activity implements ActionBar.OnNavigationListener {
                         actionBar.getThemedContext(),
                         android.R.layout.simple_list_item_1,
                         android.R.id.text1,
-                        new String[] {
-                                getString(R.string.title_section1),
-                                getString(R.string.title_section2),
-                                getString(R.string.title_section3),
-                        }),
+                        list),
                 this);
     }
 
@@ -122,8 +160,10 @@ public class BBS extends Activity implements ActionBar.OnNavigationListener {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_bb, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+            //Log.d("HUPO_sec",getArguments().getInt(ARG_SECTION_NUMBER)+"");
+            //Log.d("HUPO_type",getActivity().getIntent().getIntExtra("type",0)+"");
+             JsonMaker jsonMaker = new JsonMaker("bbs_item",getActivity().getIntent().getIntExtra("type",0),getArguments().getInt(ARG_SECTION_NUMBER)-1,getActivity());
+
             return rootView;
         }
     }

@@ -13,9 +13,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class MainActivity extends Activity
@@ -91,6 +95,9 @@ public class MainActivity extends Activity
                 break;
             case 9:
                 mTitle = getString(R.string.title_section9);
+                break;
+            case 10:
+                mTitle = getString(R.string.title_section10);
                 break;
         }
     }
@@ -180,42 +187,63 @@ public class MainActivity extends Activity
 
         @Override
         public View onCreateView(LayoutInflater inflater, final ViewGroup container,
-                Bundle savedInstanceState) {
-                final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
+            Bundle savedInstanceState) {
+            View rootView=null;
+            if(getArguments().getInt(ARG_SECTION_NUMBER)==10){
+                rootView = inflater.inflate(R.layout.fragment_main_list_bbs, container, false);
                 final ListView lv = (ListView) rootView.findViewById(R.id.listView);
-
-                refreshableView = (RefreshableView) rootView.findViewById(R.id.refreshable_view);
-
-                refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        try {
-                            JsonMaker jm = null;
-                            try {
-
-                                jm = new JsonMaker("voice", itemsArr[getArguments().getInt(ARG_SECTION_NUMBER) - 1], fragment.getActivity().getApplicationContext());
-                            } catch (Exception e) {
-                                Log.e("HUPOERROR", "JSONmaker error");
-                            }
-                            jm.setJson(rootView, fragment, fragment.getActivity().getApplicationContext(), lv);
-                            refreshableView.finishRefreshing();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, 0);
-                JsonMaker jm = null;
-                try {
-                    jm = new JsonMaker("voice", itemsArr[getArguments().getInt(ARG_SECTION_NUMBER) - 1], fragment.getActivity().getApplicationContext());
-                    if(getArguments().getInt(ARG_SECTION_NUMBER)==9){
-                        jm.setFlag("bbs");
-                    }
-                } catch (Exception e) {
-                    Log.e("HUPOERROR", "JSONmaker error");
+                ArrayList<HashMap<String,String>> data= new ArrayList<HashMap<String, String>>();
+                String [] arr = getResources().getStringArray(R.array.bbs_items);
+                for (int i=0;i<arr.length;i++){
+                    HashMap<String,String> hashMap = new HashMap<String, String>();
+                    hashMap.put("title", arr[i]);
+                    data.add(hashMap);
                 }
-                jm.setJson(rootView, fragment, fragment.getActivity().getApplicationContext(), lv);
-            return rootView;
+                lv.setAdapter(new SimpleAdapter(getActivity(),data,R.layout.bbs_list,new String[]{"title"},new int[]{R.id.title}));
+                lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Intent intent = new Intent(getActivity(),BBS.class);
+                        intent.putExtra("type",i);
+                        startActivity(intent);
+                    }
+                });
+            }else{
+                rootView = inflater.inflate(R.layout.fragment_main, container, false);
+                final ListView lv = (ListView) rootView.findViewById(R.id.listView);
+                refreshableView = (RefreshableView) rootView.findViewById(R.id.refreshable_view);
+                final View finalRootView = rootView;
+                refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
+                        @Override
+                        public void onRefresh() {
+                            try {
+                                JsonMaker jm = null;
+                                try {
+
+                                    jm = new JsonMaker("voice", itemsArr[getArguments().getInt(ARG_SECTION_NUMBER) - 1], fragment.getActivity().getApplicationContext());
+                                } catch (Exception e) {
+                                    Log.e("HUPOERROR", "JSONmaker error");
+                                }
+                                jm.setJson(finalRootView, fragment, fragment.getActivity().getApplicationContext(), lv);
+                                refreshableView.finishRefreshing();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, 0);
+                    JsonMaker jm = null;
+                    try {
+                        jm = new JsonMaker("voice", itemsArr[getArguments().getInt(ARG_SECTION_NUMBER) - 1], fragment.getActivity().getApplicationContext());
+                        if(getArguments().getInt(ARG_SECTION_NUMBER)==9){
+                            jm.setFlag("bbs");
+                        }
+                    } catch (Exception e) {
+                        Log.e("HUPOERROR", "JSONmaker error");
+                    }
+                    jm.setJson(rootView, fragment, fragment.getActivity().getApplicationContext(), lv);
+
+                }
+                  return rootView;
         }
 
         @Override

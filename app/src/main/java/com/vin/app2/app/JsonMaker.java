@@ -1,5 +1,6 @@
 package com.vin.app2.app;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -59,8 +61,10 @@ public class JsonMaker {
     private Boolean isLog=false;
     private int floor =0;
     private int toNote=0;
+    private String subItem="";
     private int reply_id=0;
     private int reply_floor=0;
+    private String [] bbsArray =new String[]{};
     private String webServerUrl="http://hupoapi.sinaapp.com/sandBox.php?";
     private HashMap<String, String> params = new HashMap<String, String>();
     private ArrayList<HashMap<String, String>> al = new ArrayList<HashMap<String, String>>();
@@ -105,9 +109,19 @@ public class JsonMaker {
         params.put("toNote",""+toNote);
     }
 
+    public JsonMaker(String oitem, int ty, int i, Activity activity) {//bbs item
+        item=oitem;
+        type=""+ty;
+        subItem=i+"";
+        mActivity=activity;
+        params.put("item",item);
+        params.put("bbs_type",type);
+        params.put("bbs_subItem",subItem);
+    }
+
     public enum ITEMS{
         VOICE,BBS,PAGE,APAGE,LOGIN,LOGED,MYPAGE,UNDEFINED,COMMENT,SUPPORT,ADDCOMMENT,USER_MAIN,
-        USER_TOPIC,USER_POST,USER_TOPIC_MAIN,USER_TOPIC_RE,USER_TOPIC_FAV
+        USER_TOPIC,USER_POST,USER_TOPIC_MAIN,USER_TOPIC_RE,USER_TOPIC_FAV,MY_BBS_ITEMS,BBS_SUB_ITEM
     }
     public JsonMaker(String oitem,String si,String ux,Activity a){
        switch (ITEMS.valueOf(oitem.toUpperCase())){
@@ -219,6 +233,13 @@ public class JsonMaker {
                                     case USER_TOPIC_FAV:
                                         getUserTopicMain(result,mActivity);
                                         break;
+                                    case MY_BBS_ITEMS:
+                                        getMyBBSArray(result);
+                                        break;
+                                    case BBS_SUB_ITEM:
+                                        getSubBBSItem(result,mActivity);
+                                        break;
+
                                 }
                             }else{
                             mActivity.runOnUiThread(new Runnable() {
@@ -237,6 +258,56 @@ public class JsonMaker {
                 }
 
         ).start();
+    }
+    private void getSubBBSItem(String result,Activity a){
+        try {
+            //todo ArrayList
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    private void getMyBBSArray(String result){
+        try {
+            ArrayList<String> a = new ArrayList<String>();
+            JSONArray jsonArray=new JSONArray(result);
+            for (int i=0;i<jsonArray.length();i++){
+                JSONObject o = (JSONObject)jsonArray.opt(i);
+                a.add(o.getString("title"));
+            }
+            String [] str=new String[a.size()];
+
+            for (int i =0;i<a.size();i++){
+                 str[i]=a.get(i);
+            }
+            final String []finalStr = str;
+            //final String [] str=(String[])a.toArray();
+            //Log.d("hupo",bbsArray.toString());
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mActivity.getActionBar().setListNavigationCallbacks(
+                            // Specify a SpinnerAdapter to populate the dropdown list.
+                            new ArrayAdapter<String>(
+                                    mActivity.getActionBar().getThemedContext(),
+                                    android.R.layout.simple_list_item_1,
+                                    android.R.id.text1,
+                                    finalStr),
+                            new ActionBar.OnNavigationListener() {
+                                @Override
+                                public boolean onNavigationItemSelected(int i, long l) {
+                                   // return false;
+                                    mActivity.getFragmentManager().beginTransaction()
+                                            .replace(R.id.container, BBS.PlaceholderFragment.newInstance(i + 1))
+                                            .commit();
+                                    return true;
+                                }
+                            });
+
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     private void getUserTopicMain(String result,final Activity a){
         try{
@@ -380,7 +451,7 @@ public class JsonMaker {
                 }
             });
         }catch (JSONException e){
-            Log.e(HUPO,"json error");
+            Log.e(HUPO, "json error");
         }
     }
     private void getUserInfo(String result,final Activity a){
@@ -489,7 +560,7 @@ public class JsonMaker {
             });
         }catch (Exception e){
             e.printStackTrace();
-            Log.e(HUPO,"json error");
+            Log.e(HUPO, "json error");
         }
 
     }
@@ -597,7 +668,6 @@ public class JsonMaker {
 
         @Override
         public void setViewText(TextView v, String text) {
-            //super.setViewText(v, );
             v.setText(Html.fromHtml(text));
         }
 
