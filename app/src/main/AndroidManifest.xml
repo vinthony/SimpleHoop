@@ -53,6 +53,10 @@
             android:name="com.vin.app2.app.BBS"
             android:label="@string/title_activity_bbs" >
         </activity>
+        <activity
+            android:name=".BBSPage"
+            android:label="@string/title_activity_bbspage" >
+        </activity>
     </application>
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->

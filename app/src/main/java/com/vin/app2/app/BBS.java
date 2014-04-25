@@ -36,19 +36,19 @@ public class BBS extends Activity implements ActionBar.OnNavigationListener {
         int type=getIntent().getIntExtra("type",0);
         String [] list={};
         switch (type){
-            case 1:
+            case 4:
                 list=getResources().getStringArray(R.array.bbs_ganbiya_items);
                 break;
-            case 2:
+            case 1:
                 list=getResources().getStringArray(R.array.bbs_nba_items);
                 break;
-            case 3:
+            case 2:
                 list=getResources().getStringArray(R.array.bbs_cba_items);
                 break;
-            case 4:
+            case 5:
                 list=getResources().getStringArray(R.array.bbs_equitment_items);
                 break;
-            case 5:
+            case 3:
                 list=getResources().getStringArray(R.array.bbs_soccer_items);
                 break;
             case 6:
@@ -163,7 +163,7 @@ public class BBS extends Activity implements ActionBar.OnNavigationListener {
             //Log.d("HUPO_sec",getArguments().getInt(ARG_SECTION_NUMBER)+"");
             //Log.d("HUPO_type",getActivity().getIntent().getIntExtra("type",0)+"");
              JsonMaker jsonMaker = new JsonMaker("bbs_item",getActivity().getIntent().getIntExtra("type",0),getArguments().getInt(ARG_SECTION_NUMBER)-1,getActivity());
-
+             jsonMaker.setJson(null,null,null,null);
             return rootView;
         }
     }

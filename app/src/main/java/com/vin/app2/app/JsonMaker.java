@@ -109,19 +109,21 @@ public class JsonMaker {
         params.put("toNote",""+toNote);
     }
 
-    public JsonMaker(String oitem, int ty, int i, Activity activity) {//bbs item
+    public JsonMaker(String oitem, int ty, int i, Activity a) {//bbs item
         item=oitem;
         type=""+ty;
         subItem=i+"";
-        mActivity=activity;
+        mActivity=a;
         params.put("item",item);
         params.put("bbs_type",type);
         params.put("bbs_subItem",subItem);
+
     }
 
     public enum ITEMS{
         VOICE,BBS,PAGE,APAGE,LOGIN,LOGED,MYPAGE,UNDEFINED,COMMENT,SUPPORT,ADDCOMMENT,USER_MAIN,
-        USER_TOPIC,USER_POST,USER_TOPIC_MAIN,USER_TOPIC_RE,USER_TOPIC_FAV,MY_BBS_ITEMS,BBS_SUB_ITEM
+        USER_TOPIC,USER_POST,USER_TOPIC_MAIN,USER_TOPIC_RE,USER_TOPIC_FAV,MY_BBS_ITEMS,BBS_ITEM,
+        BBS_DETAIL
     }
     public JsonMaker(String oitem,String si,String ux,Activity a){
        switch (ITEMS.valueOf(oitem.toUpperCase())){
@@ -150,7 +152,7 @@ public class JsonMaker {
     }
     public JsonMaker(String oitem,String ux,Activity a){//getPages
         mActivity=a;
-        if(oitem.equals("apage")||oitem.equals("comment")){
+        if(oitem.equals("apage")||oitem.equals("comment")||oitem.equals("bbs_detail")){
             item=oitem;
             url=ux;
             params.put("item",item);
@@ -236,8 +238,11 @@ public class JsonMaker {
                                     case MY_BBS_ITEMS:
                                         getMyBBSArray(result);
                                         break;
-                                    case BBS_SUB_ITEM:
+                                    case BBS_ITEM:
                                         getSubBBSItem(result,mActivity);
+                                        break;
+                                    case BBS_DETAIL:
+                                        getBBSDetail(result,mActivity);
                                         break;
 
                                 }
@@ -259,9 +264,50 @@ public class JsonMaker {
 
         ).start();
     }
-    private void getSubBBSItem(String result,Activity a){
+    private void getBBSDetail(String result,final Activity a){
         try {
-            //todo ArrayList
+            JSONObject j = new JSONObject(result);
+            ArrayList<HashMap<String,String>> m = Model.BBSDetail(j);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    private void getSubBBSItem(String result,final Activity a){
+        try {
+            JSONArray array = new JSONArray(result);
+            ArrayList<HashMap<String,String>> items=new ArrayList<HashMap<String, String>>();
+            if (!subItem.equals("0")){
+                items= Model.bbsGeneralModel(array);
+            }else{
+                items = Model.bbsListModel(array);
+            }
+            final ArrayList<HashMap<String,String>> items_final=items;
+            final ListView lv = (ListView)a.findViewById(R.id.bbs_list);
+            final RefreshableView refreshableView=(RefreshableView)a.findViewById(R.id.refreshable_view);
+            a.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(subItem.equals("0")){
+                        lv.setAdapter(new MyAdapter(a.getApplicationContext(),items_final,R.layout.list_bbs_items,new String[]{"title","info","parent"},new int[]{R.id.title,R.id.info,R.id.parent}));
+                        lv.setOnItemClickListener(new BBSPageListener(mActivity));
+                    }else{
+                        lv.setAdapter(new MyAdapter(a.getApplicationContext(),items_final,R.layout.general_bbs_items,new String[]{"title","author","info","lastReTime"},new int[]{R.id.title,R.id.author,R.id.info,R.id.lastReTime}));
+                        lv.setOnItemClickListener(new BBSPageListener(mActivity));
+                    }
+                    refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
+                        @Override
+                        public void onRefresh() {
+                            try {
+                                JsonMaker jsonMaker = new JsonMaker("bbs_item",type,subItem,mActivity);
+                                jsonMaker.setJson(null,null,null,null);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                            refreshableView.finishRefreshing();
+                        }
+                    },0);
+                }
+            });
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -583,6 +629,7 @@ public class JsonMaker {
                 if(flag.equals("bbs")){
                     MyAdapter sa = new MyAdapter(c, al, R.layout.list_bbs_items, new String[]{"title", "info", "parent"}, new int[]{R.id.title, R.id.info, R.id.parent});
                     lv.setAdapter(sa);
+                    lv.setOnItemClickListener(new BBSPageListener(f.getActivity()));
                 }else {
                     MyAdapter sa = new MyAdapter(c, al, R.layout.list_items, new String[]{"title", "content", "time", "photo", "commentNum", "admireNum"}, new int[]{R.id.title, R.id.content, R.id.time, R.id.thumb, R.id.commentNum, R.id.admireNum});
                     lv.setAdapter(sa);

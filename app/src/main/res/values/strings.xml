@@ -44,4 +44,6 @@
     <string name="time_error">时间有问题</string>
     <string name="title_activity_bbs">BBS</string>
     <string name="bbs_add"></string>
+    <string name="title_activity_bbspage">BBSPage</string>
+
 </resources>

@@ -2,11 +2,11 @@
 <resources>
     <string-array name="bbs_items">
         <item>我的主场</item>
-        <item>甘比亚大陆</item>
         <item>NBA论坛</item>
         <item>CBA论坛</item>
-        <item>运动/装备</item>
         <item>足球论坛</item>
+        <item>甘比亚大陆</item>
+        <item>运动/装备</item>
         <item>赛车论坛</item>
         <item>综合体育</item>
         <item>实战健身</item>
@@ -15,6 +15,7 @@
         <item>网页游戏</item>
     </string-array>
     <string-array name="bbs_nba_items">
+        <item>最热</item>
         <item>湿呼呼的话题</item>
         <item>火箭专区</item>
         <item>湖人专区</item>
@@ -59,6 +60,7 @@
         <item>篮球图片</item>
     </string-array>
     <string-array name="bbs_cba_items">
+        <item>最热</item>
         <item>中国篮球</item>
         <item>中国篮球话题区</item>
         <item>东莞烈豹</item>
@@ -88,6 +90,7 @@
         <item>中国篮球意见区</item>
     </string-array>
     <string-array name="bbs_soccer_items">
+        <item>最热</item>
         <item>国家队</item>
         <item>足球实战区</item>
         <item>足球场</item>
@@ -114,6 +117,7 @@
         <item>FIVE</item>
     </string-array>
     <string-array name="bbs_ganbiya_items">
+        <item>最热</item>
         <item>步行街</item>
         <item>开放区</item>
         <item>影视区</item>
@@ -133,6 +137,7 @@
         <item>视频直播区</item>
     </string-array>
     <string-array name="bbs_zonghe_items">
+        <item>最热</item>
         <item>体育场</item>
         <item>红牛巅峰王者专区</item>
         <item>NFL美式橄榄球场</item>
@@ -159,6 +164,7 @@
         <item>综合体育翻译团</item>
     </string-array>
     <string-array name="bbs_equitment_items">
+        <item>最热</item>
         <item>运动装备</item>
         <item>球衣区</item>
         <item>潮流区</item>
@@ -174,6 +180,7 @@
         <item>装备区意见受理</item>
     </string-array>
     <string-array name="bbs_f1_items">
+        <item>最热</item>
         <item>F1赛车场</item>
         <item>法拉得</item>
         <item>迈凯轮</item>
@@ -197,6 +204,7 @@
         <item>F1赛车游戏</item>
     </string-array>
     <string-array name="bbs_szjs_items">
+        <item>最热</item>
         <item>街球实战</item>
         <item>花式篮球</item>
         <item>同城约战</item>
@@ -204,15 +212,18 @@
         <item>虎扑助学基金会</item>
     </string-array>
     <string-array name="bbs_cpzx_items">
+        <item>最热</item>
         <item>篮彩神棍区</item>
         <item>足彩讨论区</item>
         <item>数字彩讨论区</item>
         <item>虎扑彩票客服区</item>
     </string-array>
     <string-array name="bbs_zwgl_items">
+        <item>最热</item>
         <item>版务意见与建议</item>
     </string-array>
     <string-array name="bbs_games_items">
+        <item>最热</item>
         <item>天天篮球</item>
         <item>萌卡篮球</item>
         <item>巴西-世界杯</item>
