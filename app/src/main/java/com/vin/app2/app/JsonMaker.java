@@ -202,7 +202,7 @@ public class JsonMaker {
                                     result += line;
                                 }
                                 in.close();
-                                Log.d(HUPO,result);
+                                Log.d(HUPO+"result",result);
                                 urlConnection.disconnect();
                                 switch (ITEMS.valueOf(item.toUpperCase())){
                                     case VOICE:
@@ -266,8 +266,16 @@ public class JsonMaker {
     }
     private void getBBSDetail(String result,final Activity a){
         try {
-            JSONObject j = new JSONObject(result);
-            ArrayList<HashMap<String,String>> m = Model.BBSDetail(j);
+
+            JSONArray j = new JSONArray(result);
+            final ArrayList<HashMap<String,String>> m = Model.BBSDetail(j);
+            final ListView lv = (ListView)a.findViewById(R.id.bbs_detail);
+            a.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    lv.setAdapter(new MyAdapter(a.getApplicationContext(),m,R.layout.bbs_item_floor,new String[]{"userName","userImg","content","admireNum","userInfo"},new int[]{R.id.userName,R.id.userImg,R.id.content,R.id.admireNum,R.id.userinfo}));
+                }
+            });
         }catch (Exception e){
             e.printStackTrace();
         }

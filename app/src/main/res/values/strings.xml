@@ -45,5 +45,6 @@
     <string name="title_activity_bbs">BBS</string>
     <string name="bbs_add"></string>
     <string name="title_activity_bbspage">BBSPage</string>
+    <string name="RepeatBackKeyToExit">再按一次退出应用程序</string>
 
 </resources>

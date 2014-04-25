@@ -6,8 +6,10 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -34,6 +37,7 @@ public class MainActivity extends Activity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private boolean isExit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,24 @@ public class MainActivity extends Activity
 
         //Log.d("HUPO","Main list restart!!!");
     }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if(!isExit) {
+                isExit = true;
+                Toast.makeText(getApplicationContext(), R.string.RepeatBackKeyToExit, Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable(){
+                    public void run(){
+                        isExit = false;
+                    }
+                }, 2000);;
+                return false;
+            }
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {

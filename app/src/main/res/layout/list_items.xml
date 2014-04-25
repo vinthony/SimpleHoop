@@ -5,17 +5,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:paddingBottom="4dip"
-    android:paddingLeft="12dip"
-    android:paddingRight="12dip"
     >
     <ImageView
-        android:layout_marginTop="10dp"
         android:id="@+id/thumb"
         android:layout_width="165px"
         android:layout_height="75px"
-        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/title"
         android:scaleType="fitXY"
-
+        />
+    <ImageView
+        android:id="@+id/like_img"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_below="@+id/content"
+        android:src="@drawable/ic_like"
         />
     <TextView
         android:text="@string/loading"
@@ -23,21 +26,27 @@
         android:layout_width="30pt"
         android:layout_height="wrap_content"
         android:layout_below="@+id/content"
+        android:layout_toRightOf="@+id/like_img"
         />
+
     <TextView
         android:text="@string/loading"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/title"
-        android:textSize="20dp"
-        android:layout_toRightOf="@+id/thumb"
+        android:textColor="@color/hupo"
+        android:textSize="18dp"
         />
     <TextView
-        android:textSize="16dp"
+        android:paddingLeft="10dp"
+        android:textColor="@color/main"
+        android:textSize="14dp"
         android:text="@string/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/content"
+        android:lines="3"
+        android:layout_toRightOf="@+id/thumb"
         android:layout_below="@+id/title"
         />
     <TextView
@@ -45,16 +54,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/time"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/content"
-        android:layout_toRightOf="@+id/commentNum"
         />
+    <ImageView
+        android:layout_below="@+id/content"
+        android:id="@+id/comments_img"
+        android:src="@drawable/ic_comments"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_toRightOf="@+id/admireNum"
+        />
+
     <TextView
         android:text="@string/loading"
         android:layout_width="30pt"
-        android:layout_height="30pt"
+        android:layout_height="wrap_content"
         android:id="@+id/commentNum"
         android:layout_below="@+id/content"
-        android:layout_toRightOf="@+id/admireNum"
+        android:layout_toRightOf="@+id/comments_img"
         />
 
    </RelativeLayout>

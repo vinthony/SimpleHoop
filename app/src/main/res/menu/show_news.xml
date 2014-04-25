@@ -5,11 +5,13 @@
 
     <item android:id="@+id/action_settings"
         android:title="分享"
+        android:icon="@drawable/ic_share"
         android:orderInCategory="100"
         android:showAsAction="ifRoom" />
 
     <item android:id="@+id/comment"
         android:title="@string/comment"
+        android:icon="@drawable/ic_comments"
         android:showAsAction="ifRoom|collapseActionView"
         android:actionViewClass="android.widget.Plain"
         />

@@ -140,8 +140,18 @@ public class Model {
         return al;
     }
 
-    public static ArrayList<HashMap<String, String>> BBSDetail(JSONObject j) {
-
-        return null;
+    public static ArrayList<HashMap<String, String>> BBSDetail(JSONArray j) throws JSONException{
+        ArrayList<HashMap<String,String>> al = new ArrayList<HashMap<String, String>>();
+        for (int i=0;i<j.length();i++){
+            JSONObject o = (JSONObject)j.opt(i);
+            HashMap<String,String> m = new HashMap<String, String>();
+            m.put("userName",o.getString("userName"));
+            m.put("content",o.getString("content"));
+            m.put("userImg",o.getString("userImg"));
+            m.put("admireNum",o.getString("admireNum"));
+            m.put("userInfo",o.getString("time"));
+            al.add(m);
+        }
+        return al;
     }
 }

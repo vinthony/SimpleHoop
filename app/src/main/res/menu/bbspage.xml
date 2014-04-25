@@ -5,13 +5,16 @@
     <item android:id="@+id/shoucang"
         android:title="收藏"
         android:orderInCategory="100"
+        android:icon="@drawable/ic_star_on"
         android:showAsAction="never" />
     <item android:id="@+id/yinyong"
         android:title="引用"
+        android:icon="@drawable/ic_redo"
         android:orderInCategory="100"
         android:showAsAction="never" />
     <item android:id="@+id/action_settings"
         android:title="只看楼主"
+        android:icon="@drawable/ic_person_md"
         android:orderInCategory="100"
         android:showAsAction="never" />
 </menu>
