@@ -23,7 +23,7 @@ public class Comment extends Activity {
         getActionBar().show();
         url=getIntent().getStringExtra("url");
         jsonMaker=new JsonMaker("comment",url,Comment.this);
-        jsonMaker.setJson(null,null,null,null);
+        jsonMaker.setJson();
     }
 
     public Intent getParentActivityIntent() {
@@ -62,13 +62,13 @@ public class Comment extends Activity {
             if(flag==1){
                 jsonMaker=new JsonMaker("comment",url,Comment.this);
                 jsonMaker.setFlag("hl");
-                jsonMaker.setJson(null,null,null,null);
+                jsonMaker.setJson();
                 flag=0;
                 item.setTitle("全部回帖");
             }else{
                 jsonMaker=new JsonMaker("comment",url,Comment.this);
                 jsonMaker.setFlag("ge");
-                jsonMaker.setJson(null,null,null,null);
+                jsonMaker.setJson();
                 item.setTitle("这些亮了");
                 flag=1;
             }

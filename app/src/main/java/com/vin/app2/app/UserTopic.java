@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import java.util.Locale;
 
@@ -26,6 +25,7 @@ public class UserTopic extends Activity implements ActionBar.TabListener {
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+    private static final int [] arr={R.layout.fragment_user_topic,R.layout.fragment_user_topic_re,R.layout.fragment_user_topic_fav};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +39,7 @@ public class UserTopic extends Activity implements ActionBar.TabListener {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().show();
 
+        //ActionBar.Tab tabA =actionBar.newTab().setText()
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
@@ -84,6 +85,7 @@ public class UserTopic extends Activity implements ActionBar.TabListener {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -91,9 +93,11 @@ public class UserTopic extends Activity implements ActionBar.TabListener {
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
-        mViewPager.setCurrentItem(tab.getPosition());
-    }
+        Log.d("HUPO_tab_position",tab.getPosition()+"");
 
+        mViewPager.setCurrentItem(tab.getPosition());
+
+    }
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
@@ -114,7 +118,7 @@ public class UserTopic extends Activity implements ActionBar.TabListener {
 
         @Override
         public Fragment getItem(int position) {
-             Log.d("HUPO_getitem",""+position);
+             //Log.d("HUPO_getitem",""+position);
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             return TabFragment.newInstance(position + 1);
@@ -150,9 +154,9 @@ public class UserTopic extends Activity implements ActionBar.TabListener {
          * The fragment argument representing the section number for this
          * fragment.
          */
-        private static final String ARG_SECTION_NUMBER = "section_number";
         private static final String [] ITEM_ARR={"user_topic_main","user_topic_re","user_topic_fav"};
 
+        private static final String ARG_SECTION_NUMBER = "section_number";
         /**
          * Returns a new instance of this fragment for the given section
          * number.
@@ -174,7 +178,7 @@ public class UserTopic extends Activity implements ActionBar.TabListener {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_user_topic, container, false);
             JsonMaker jsonMaker = new JsonMaker(ITEM_ARR[getArguments().getInt(ARG_SECTION_NUMBER)-1],getActivity());
-            jsonMaker.setJson(null,null,null,null);
+            jsonMaker.setJson();
             return rootView;
         }
     }

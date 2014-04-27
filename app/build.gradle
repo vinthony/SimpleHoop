@@ -31,4 +31,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile files('libs/universal-image-loader-1.9.1-with-sources.jar')
     compile files('libs/slidingmenu.jar')
+    compile files('libs/commons-httpclient-3.1.jar')
 }

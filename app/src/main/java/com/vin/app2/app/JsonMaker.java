@@ -2,7 +2,6 @@ package com.vin.app2.app;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -157,6 +156,11 @@ public class JsonMaker {
             url=ux;
             params.put("item",item);
             params.put("url",url);
+        }else if(oitem.equals("voice")){
+            item=oitem;
+            type=ux;
+            params.put("item",item);
+            params.put("type",type);
         }else{
             item=oitem;
             sign=ux;
@@ -178,7 +182,7 @@ public class JsonMaker {
     public void setFlag(String f){
         flag=f;
     }
-    public void setJson(final View rV,final Fragment f, final Context c, final ListView lv) {
+    public void setJson() {
         if(!item.equals("loged")) {
             final_Url = Tools.getUrlWithParam(webServerUrl, params);
         }else {
@@ -206,7 +210,7 @@ public class JsonMaker {
                                 urlConnection.disconnect();
                                 switch (ITEMS.valueOf(item.toUpperCase())){
                                     case VOICE:
-                                        getNewsList(result, rV, lv, f, c);
+                                        getNewsList(result, mActivity);
                                         break;
                                     case APAGE:
                                         getNewsPage(result, mActivity);
@@ -233,7 +237,7 @@ public class JsonMaker {
                                         getUserTopicRe(result,mActivity);
                                         break;
                                     case USER_TOPIC_FAV:
-                                        getUserTopicMain(result,mActivity);
+                                        getUserTopicFav(result,mActivity);
                                         break;
                                     case MY_BBS_ITEMS:
                                         getMyBBSArray(result);
@@ -306,14 +310,14 @@ public class JsonMaker {
                         @Override
                         public void onRefresh() {
                             try {
-                                JsonMaker jsonMaker = new JsonMaker("bbs_item",type,subItem,mActivity);
-                                jsonMaker.setJson(null,null,null,null);
+                                JsonMaker jsonMaker = new JsonMaker("bbs_item",Integer.parseInt(type),Integer.parseInt(subItem),mActivity);
+                                jsonMaker.setJson();
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
                             refreshableView.finishRefreshing();
                         }
-                    },0);
+                    },1000);
                 }
             });
         }catch (Exception e){
@@ -363,12 +367,27 @@ public class JsonMaker {
             e.printStackTrace();
         }
     }
+    private void getUserTopicFav(String result,final Activity a){
+        try{
+            final JSONArray j = new JSONArray(result);
+            final ArrayList<HashMap<String,String>> m = Model.userTopicModel(j);
+            final ListView lv =(ListView)a.findViewById(R.id.user_topic);
+            a.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    lv.setAdapter(new MyAdapter(a.getApplicationContext(), m, R.layout.list_topic_item, new String[]{"title", "bbs", "time", "context"}, new int[]{R.id.title, R.id.bbs, R.id.time, R.id.context}));
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     private void getUserTopicMain(String result,final Activity a){
         try{
             final JSONArray j = new JSONArray(result);
-            Fragment f= a.getFragmentManager().findFragmentById(R.layout.fragment_user_topic);
+            // Fragment f= a.getFragmentManager().findFragmentById(R.layout.fragment_user_topic);
             final ArrayList<HashMap<String,String>> m = Model.userTopicModel(j);
-            final ListView lv_main =(ListView)f.getView().findViewById(R.id.user_topic);
+            final ListView lv_main =(ListView)a.findViewById(R.id.user_topic);
             a.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -382,9 +401,9 @@ public class JsonMaker {
     private void getUserTopicRe(String result,final Activity a){
         try{
             final JSONArray j = new JSONArray(result);
-            Fragment f= a.getFragmentManager().findFragmentById(R.layout.fragment_user_topic);
+           // Fragment f= a.getFragmentManager().findFragmentById(R.layout.fragment_user_topic);
             final ArrayList<HashMap<String,String>> m = Model.userTopicReModel(j);
-           final ListView lv_main =(ListView)f.getView().findViewById(R.id.user_topic);
+           final ListView lv_main =(ListView)a.findViewById(R.id.user_topic);
             a.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -486,7 +505,7 @@ public class JsonMaker {
                                         String content = et_message.getText().toString().trim();
                                         String x=db.fetchData(1).getString(1);
                                         JsonMaker jm = new JsonMaker("addComment",x,u,content,0,0,0,a);
-                                        jm.setJson(null,null,null,null);
+                                        jm.setJson();
                                     }
 
                                 }else{
@@ -514,7 +533,6 @@ public class JsonMaker {
             final TextView tv_userName = (TextView)a.findViewById(R.id.userName);
             final TextView tv_pageCount = (TextView)a.findViewById(R.id.pageCount);
             final TextView tv_userinfo = (TextView)a.findViewById(R.id.userinfo);
-            //final ListView lv_recentNews = (ListView)a.findViewById(R.id.recentNews);
             final ImageView iv_userImg =(ImageView)a.findViewById(R.id.userImg);
             final Button btn_topic = (Button)a.findViewById(R.id.topic_button);
 
@@ -575,7 +593,7 @@ public class JsonMaker {
                                 if(db.isLogin()){
                                     String x=db.fetchData(1).getString(1);
                                     JsonMaker jm = new JsonMaker("support",x,u,a);
-                                    jm.setJson(null,null,null,null);
+                                    jm.setJson();
 
                                 }
                                 db.close();
@@ -599,7 +617,7 @@ public class JsonMaker {
                                        String content = et_message.getText().toString().trim();
                                        String x=db.fetchData(1).getString(1);
                                        JsonMaker jm = new JsonMaker("addComment",x,u,content,0,0,0,a);
-                                       jm.setJson(null,null,null,null);
+                                       jm.setJson();
                                    }
 
                                }
@@ -618,7 +636,7 @@ public class JsonMaker {
         }
 
     }
-    private void getNewsList(String result,View rV, final ListView lv, final Fragment f, final Context c){
+    private void getNewsList(String result,final Activity activity){
         try{
             if(flag.equals("bbs")){
                 JSONArray j = new JSONArray(result);
@@ -631,32 +649,34 @@ public class JsonMaker {
         }catch (Exception e){
             e.printStackTrace();
         }
-        rV.post(new Runnable() {
+       final ListView lv = (ListView)activity.findViewById(R.id.listView);
+        activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if(flag.equals("bbs")){
-                    MyAdapter sa = new MyAdapter(c, al, R.layout.list_bbs_items, new String[]{"title", "info", "parent"}, new int[]{R.id.title, R.id.info, R.id.parent});
+                    MyAdapter sa = new MyAdapter(mActivity, al, R.layout.list_bbs_items, new String[]{"title", "info", "parent"}, new int[]{R.id.title, R.id.info, R.id.parent});
                     lv.setAdapter(sa);
-                    lv.setOnItemClickListener(new BBSPageListener(f.getActivity()));
+                    lv.setOnItemClickListener(new BBSPageListener(mActivity));
                 }else {
-                    MyAdapter sa = new MyAdapter(c, al, R.layout.list_items, new String[]{"title", "content", "time", "photo", "commentNum", "admireNum"}, new int[]{R.id.title, R.id.content, R.id.time, R.id.thumb, R.id.commentNum, R.id.admireNum});
+                    MyAdapter sa = new MyAdapter(mActivity, al, R.layout.list_items, new String[]{"title", "content", "time", "photo", "commentNum", "admireNum"}, new int[]{R.id.title, R.id.content, R.id.time, R.id.thumb, R.id.commentNum, R.id.admireNum});
                     lv.setAdapter(sa);
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            Toast.makeText(c, "正在努力加载中" + al.get(i).get("link") + "。。。。。 QAQ", Toast.LENGTH_SHORT).show();
-                            Intent it = new Intent(c, NewsPage.class);
+                            Toast.makeText(mActivity.getApplicationContext(), "正在努力加载中" + al.get(i).get("link") + "。。。。。 QAQ", Toast.LENGTH_SHORT).show();
+                            Intent it = new Intent(mActivity, NewsPage.class);
                             Bundle bundle = new Bundle();
                             bundle.putString("url", al.get(i).get("link"));
                             it.putExtras(bundle);
-                            f.getActivity().startActivity(it);
+                            mActivity.startActivity(it);
 
 
                         }
                     });
                 }
-                }
+            }
         });
+
     }
     private void getLoginInformation(String result, final Activity a){
         Log.d(HUPO,result);

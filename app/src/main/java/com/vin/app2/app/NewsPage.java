@@ -22,7 +22,7 @@ public class NewsPage extends Activity {
         Bundle bundle =getIntent().getExtras();
         url = bundle.getString("url");
         jsonMaker=new JsonMaker("apage",url,NewsPage.this);
-        jsonMaker.setJson(null,null,null,null);
+        jsonMaker.setJson();
         Log.d("HUPO_activity","on create");
     }
 

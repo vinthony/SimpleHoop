@@ -69,7 +69,7 @@ public class BBS extends Activity implements ActionBar.OnNavigationListener {
             case 0:
             default:
                 JsonMaker jsonMaker=new JsonMaker("my_bbs_items",BBS.this);
-                jsonMaker.setJson(null,null,null,null);
+                jsonMaker.setJson();
                 //list=jsonMaker.getResult("my_bbs_items");
                 break;
         }
@@ -163,7 +163,7 @@ public class BBS extends Activity implements ActionBar.OnNavigationListener {
             //Log.d("HUPO_sec",getArguments().getInt(ARG_SECTION_NUMBER)+"");
             //Log.d("HUPO_type",getActivity().getIntent().getIntExtra("type",0)+"");
              JsonMaker jsonMaker = new JsonMaker("bbs_item",getActivity().getIntent().getIntExtra("type",0),getArguments().getInt(ARG_SECTION_NUMBER)-1,getActivity());
-             jsonMaker.setJson(null,null,null,null);
+             jsonMaker.setJson();
             return rootView;
         }
     }

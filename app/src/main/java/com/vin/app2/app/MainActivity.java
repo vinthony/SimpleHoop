@@ -157,12 +157,16 @@ public class MainActivity extends Activity
             String sign ="";
             try {
                 db.open();
-                userName=db.fetchData(1).getString(2);
-                sign = db.fetchData(1).getString(1);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             if(db.isLogin()){
+                try {
+                    userName=db.fetchData(1).getString(2);
+                    sign = db.fetchData(1).getString(1);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 Intent i = new Intent(MainActivity.this,UserLoged.class);
                 i.putExtra("username",userName);
                 i.putExtra("sign",sign);
@@ -232,9 +236,9 @@ public class MainActivity extends Activity
                 });
             }else{
                 rootView = inflater.inflate(R.layout.fragment_main, container, false);
-                final ListView lv = (ListView) rootView.findViewById(R.id.listView);
+                //final ListView lv = (ListView) rootView.findViewById(R.id.listView);
                 refreshableView = (RefreshableView) rootView.findViewById(R.id.refreshable_view);
-                final View finalRootView = rootView;
+                //final View finalRootView = rootView;
                 refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
                         @Override
                         public void onRefresh() {
@@ -242,11 +246,11 @@ public class MainActivity extends Activity
                                 JsonMaker jm = null;
                                 try {
 
-                                    jm = new JsonMaker("voice", itemsArr[getArguments().getInt(ARG_SECTION_NUMBER) - 1], fragment.getActivity().getApplicationContext());
+                                    jm = new JsonMaker("voice", itemsArr[getArguments().getInt(ARG_SECTION_NUMBER) - 1], getActivity());
                                 } catch (Exception e) {
                                     Log.e("HUPOERROR", "JSONmaker error");
                                 }
-                                jm.setJson(finalRootView, fragment, fragment.getActivity().getApplicationContext(), lv);
+                                jm.setJson();
                                 refreshableView.finishRefreshing();
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -255,14 +259,14 @@ public class MainActivity extends Activity
                     }, 0);
                     JsonMaker jm = null;
                     try {
-                        jm = new JsonMaker("voice", itemsArr[getArguments().getInt(ARG_SECTION_NUMBER) - 1], fragment.getActivity().getApplicationContext());
+                        jm = new JsonMaker("voice", itemsArr[getArguments().getInt(ARG_SECTION_NUMBER) - 1], getActivity());
                         if(getArguments().getInt(ARG_SECTION_NUMBER)==9){
                             jm.setFlag("bbs");
                         }
                     } catch (Exception e) {
                         Log.e("HUPOERROR", "JSONmaker error");
                     }
-                    jm.setJson(rootView, fragment, fragment.getActivity().getApplicationContext(), lv);
+                    jm.setJson();
 
                 }
                   return rootView;

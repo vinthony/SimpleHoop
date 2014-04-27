@@ -263,7 +263,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>{
             try {
                 // Simulate network access.
                 Thread.sleep(1000);
-                jm.setJson(null,null,null,null);
+                jm.setJson();
             } catch (InterruptedException e) {
                 return false;
             }

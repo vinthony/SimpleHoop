@@ -16,7 +16,7 @@ public class BBSPage extends Activity {
         getActionBar().show();
         String  url=getIntent().getStringExtra("url");
         JsonMaker jsonMaker = new JsonMaker("bbs_detail",url,BBSPage.this);
-        jsonMaker.setJson(null,null,null,null);
+        jsonMaker.setJson();
     }
 
 

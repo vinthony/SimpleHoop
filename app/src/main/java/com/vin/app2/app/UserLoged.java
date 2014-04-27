@@ -30,7 +30,7 @@ public class UserLoged extends Activity {
         }
         if(db.isLogin()){
             JsonMaker jsonMaker = new JsonMaker("user_main",sign,UserLoged.this);
-            jsonMaker.setJson(null,null,null,null);
+            jsonMaker.setJson();
         }else{
             //todo 浏览别人的空间
         }

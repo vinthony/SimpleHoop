@@ -1,7 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.vin.app2.app.BBSPage" >
+    <item android:id="@+id/liangle"
+        android:title="亮了"
+        android:icon="@drawable/ic_lightbulb"
+        android:showAsAction="ifRoom"
+        >
 
+    </item>
     <item android:id="@+id/shoucang"
         android:title="收藏"
         android:orderInCategory="100"

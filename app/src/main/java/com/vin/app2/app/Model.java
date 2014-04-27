@@ -102,8 +102,8 @@ public class Model {
             HashMap<String, String> temp = new HashMap<String, String>();
             temp.put("title", o.getString("title"));
             temp.put("bbs", o.getString("bbs"));
-            temp.put("bbsLink", o.getString("bbsLink"));
-            temp.put("link", o.getString("link"));
+            temp.put("bbsLink", o.getString("bbslink"));
+            temp.put("link", o.getString("relink"));
             temp.put("time", o.getString("time"));
             temp.put("context", o.getString("context"));
             re.add(temp);
