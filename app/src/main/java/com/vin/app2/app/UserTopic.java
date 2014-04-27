@@ -25,6 +25,7 @@ public class UserTopic extends Activity implements ActionBar.TabListener {
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+    private Fragment mFragment;
     private static final int [] arr={R.layout.fragment_user_topic,R.layout.fragment_user_topic_re,R.layout.fragment_user_topic_fav};
 
     @Override
@@ -94,7 +95,6 @@ public class UserTopic extends Activity implements ActionBar.TabListener {
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
         Log.d("HUPO_tab_position",tab.getPosition()+"");
-
         mViewPager.setCurrentItem(tab.getPosition());
 
     }
@@ -177,7 +177,7 @@ public class UserTopic extends Activity implements ActionBar.TabListener {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_user_topic, container, false);
-            JsonMaker jsonMaker = new JsonMaker(ITEM_ARR[getArguments().getInt(ARG_SECTION_NUMBER)-1],getActivity());
+            JsonMaker jsonMaker = new JsonMaker(ITEM_ARR[getArguments().getInt(ARG_SECTION_NUMBER)-1],getActivity(),rootView);
             jsonMaker.setJson();
             return rootView;
         }

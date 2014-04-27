@@ -64,6 +64,7 @@ public class JsonMaker {
     private int reply_id=0;
     private int reply_floor=0;
     private String [] bbsArray =new String[]{};
+    private View rootView;
     private String webServerUrl="http://hupoapi.sinaapp.com/sandBox.php?";
     private HashMap<String, String> params = new HashMap<String, String>();
     private ArrayList<HashMap<String, String>> al = new ArrayList<HashMap<String, String>>();
@@ -119,6 +120,27 @@ public class JsonMaker {
 
     }
 
+    public JsonMaker(String oitem, Activity a, View rv) {
+        rootView =rv;
+        item = oitem;
+        mActivity=a;
+        MyDBAdapter myDBAdapter = new MyDBAdapter(a.getApplicationContext());
+        try {
+            myDBAdapter.open();
+            if(myDBAdapter.isLogin()){
+                sign=myDBAdapter.fetchData(1).getString(1);
+            }else{
+                //todo
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        myDBAdapter.close();
+        params.put("item",item);
+        params.put("sign",sign);
+        Tools.imageInit(a.getApplicationContext());
+    }
+
     public enum ITEMS{
         VOICE,BBS,PAGE,APAGE,LOGIN,LOGED,MYPAGE,UNDEFINED,COMMENT,SUPPORT,ADDCOMMENT,USER_MAIN,
         USER_TOPIC,USER_POST,USER_TOPIC_MAIN,USER_TOPIC_RE,USER_TOPIC_FAV,MY_BBS_ITEMS,BBS_ITEM,
@@ -170,14 +192,6 @@ public class JsonMaker {
         }
         Tools.imageInit(a.getApplicationContext());
 
-    }
-    public JsonMaker(String oitem, String s,Context c) {//getNewsVoice
-        mContext=c;
-        item = oitem;
-        type = s;
-        params.put("item", item);
-        params.put("type", type);
-        Tools.imageInit(c);
     }
     public void setFlag(String f){
         flag=f;
@@ -237,7 +251,7 @@ public class JsonMaker {
                                         getUserTopicRe(result,mActivity);
                                         break;
                                     case USER_TOPIC_FAV:
-                                        getUserTopicFav(result,mActivity);
+                                        getUserTopicFav(result, mActivity);
                                         break;
                                     case MY_BBS_ITEMS:
                                         getMyBBSArray(result);
@@ -371,7 +385,7 @@ public class JsonMaker {
         try{
             final JSONArray j = new JSONArray(result);
             final ArrayList<HashMap<String,String>> m = Model.userTopicModel(j);
-            final ListView lv =(ListView)a.findViewById(R.id.user_topic);
+            final ListView lv =(ListView)rootView.findViewById(R.id.user_topic);
             a.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -387,7 +401,7 @@ public class JsonMaker {
             final JSONArray j = new JSONArray(result);
             // Fragment f= a.getFragmentManager().findFragmentById(R.layout.fragment_user_topic);
             final ArrayList<HashMap<String,String>> m = Model.userTopicModel(j);
-            final ListView lv_main =(ListView)a.findViewById(R.id.user_topic);
+            final ListView lv_main =(ListView)rootView.findViewById(R.id.user_topic);
             a.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -403,7 +417,7 @@ public class JsonMaker {
             final JSONArray j = new JSONArray(result);
            // Fragment f= a.getFragmentManager().findFragmentById(R.layout.fragment_user_topic);
             final ArrayList<HashMap<String,String>> m = Model.userTopicReModel(j);
-           final ListView lv_main =(ListView)a.findViewById(R.id.user_topic);
+           final ListView lv_main =(ListView)rootView.findViewById(R.id.user_topic);
             a.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
