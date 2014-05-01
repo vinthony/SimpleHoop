@@ -225,6 +225,7 @@ public class MainActivity extends Activity
                     hashMap.put("title", arr[i]);
                     data.add(hashMap);
                 }
+                //lv.addHeaderView();
                 lv.setAdapter(new SimpleAdapter(getActivity(),data,R.layout.bbs_list,new String[]{"title"},new int[]{R.id.title}));
                 lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override

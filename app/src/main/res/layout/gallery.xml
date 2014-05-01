@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/fl_main"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+        <android.support.v4.view.ViewPager
+            android:id="@+id/gallery"
+            android:layout_width="fill_parent"
+            android:layout_height="240dp"
+            android:layout_marginBottom="15dp"
+            >
+        </android.support.v4.view.ViewPager>
+        <TextView
+            android:gravity="center_horizontal"
+            android:text="@string/loading"
+            android:layout_alignBottom="@+id/gallery"
+            android:background="#80000000"
+            android:textSize="35px"
+            android:textColor="#ffffff"
+            android:id="@+id/description"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:id="@+id/viewGroup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/gallery"
+            android:layout_marginBottom="3dp"
+            android:gravity="center"
+            android:orientation="horizontal" >
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

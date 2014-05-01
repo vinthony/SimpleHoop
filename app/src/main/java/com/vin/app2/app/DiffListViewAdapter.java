@@ -93,8 +93,8 @@ public class DiffListViewAdapter extends BaseAdapter {
                     }
                 });
                 firstItemViewHolder=new FirstItemViewHolder();
-                firstItemViewHolder.imageView=(ImageView) firstItemView.findViewById(R.id.imageView);
-                firstItemView.setTag(firstItemViewHolder);
+                //firstItemViewHolder.imageView=(ImageView) firstItemView.findViewById(R.id.imageView);
+                //firstItemView.setTag(firstItemViewHolder);
 
             } else {
                 firstItemViewHolder=(FirstItemViewHolder) firstItemView.getTag();

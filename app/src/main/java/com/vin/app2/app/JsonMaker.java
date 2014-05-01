@@ -5,9 +5,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,6 +24,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.image.SmartImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -36,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static android.support.v4.app.ActivityCompat.startActivity;
 
@@ -286,11 +293,13 @@ public class JsonMaker {
         try {
 
             JSONArray j = new JSONArray(result);
+            final View x = a.getLayoutInflater().inflate(R.layout.bbs_firstitem,null);
             final ArrayList<HashMap<String,String>> m = Model.BBSDetail(j);
             final ListView lv = (ListView)a.findViewById(R.id.bbs_detail);
             a.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    lv.addHeaderView(x);
                     lv.setAdapter(new MyAdapter(a.getApplicationContext(),m,R.layout.bbs_item_floor,new String[]{"userName","userImg","content","admireNum","userInfo"},new int[]{R.id.userName,R.id.userImg,R.id.content,R.id.admireNum,R.id.userinfo}));
                 }
             });
@@ -651,6 +660,7 @@ public class JsonMaker {
 
     }
     private void getNewsList(String result,final Activity activity){
+        JSONArray ja_gallery=null;
         try{
             if(flag.equals("bbs")){
                 JSONArray j = new JSONArray(result);
@@ -658,29 +668,139 @@ public class JsonMaker {
             }else{
                 JSONObject j = new JSONObject(result);
                 JSONArray jsonArr = j.getJSONArray("news");
+                ja_gallery= j.getJSONArray("gallery");
                 al=Model.newsListModel(jsonArr,al);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
        final ListView lv = (ListView)activity.findViewById(R.id.listView);
+        final JSONArray finalJa_gallery = ja_gallery;
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if(flag.equals("bbs")){
                     MyAdapter sa = new MyAdapter(mActivity, al, R.layout.list_bbs_items, new String[]{"title", "info", "parent"}, new int[]{R.id.title, R.id.info, R.id.parent});
+                    //View v=activity.getLayoutInflater().inflate(R.layout.bbs_firstitem,null);
+                    //lv.addHeaderView(v);
                     lv.setAdapter(sa);
                     lv.setOnItemClickListener(new BBSPageListener(mActivity));
                 }else {
                     MyAdapter sa = new MyAdapter(mActivity, al, R.layout.list_items, new String[]{"title", "content", "time", "photo", "commentNum", "admireNum"}, new int[]{R.id.title, R.id.content, R.id.time, R.id.thumb, R.id.commentNum, R.id.admireNum});
+                    View header=activity.getLayoutInflater().inflate(R.layout.gallery,null);
+                    final ViewPager vp = (ViewPager)header.findViewById(R.id.gallery);
+                    ViewGroup vg = (ViewGroup)header.findViewById(R.id.viewGroup);
+                    TextView tv_ch = (TextView)header.findViewById(R.id.description);
+                    if(finalJa_gallery.length()>0){
+                        JSONObject init =(JSONObject)finalJa_gallery.opt(0);
+                        try {
+                            tv_ch.setText(init.getString("title"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    final JSONArray fl_gallery= finalJa_gallery;
+                    List<View> imgs = new ArrayList<View>();
+                    ArrayList<String> tv_data=new ArrayList<String>();
+                    ArrayList<String> url_data = new ArrayList<String>();
+                    for(int i =0 ;i<fl_gallery.length() ;i++ ){
+                        JSONObject o  = (JSONObject)fl_gallery.opt(i);
+                        try {
+                            SmartImageView smv =new SmartImageView(activity);
+                            smv.setImageUrl(o.getString("img"));
+                            smv.setScaleType(ImageView.ScaleType.FIT_XY);
+                            imgs.add(smv);
+                            tv_data.add(o.getString("title"));
+                            url_data.add(o.getString("url"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                     ImageView[] imageViews = null;
+                     ImageView imageView = null;
+                     final AtomicInteger what = new AtomicInteger(0);
+                    imageViews = new ImageView[imgs.size()];
+                    for (int i = 0; i < imgs.size(); i++) {
+                        imageView = new ImageView(activity);
+                        imageView.setLayoutParams(new ViewGroup.LayoutParams(20, 20));
+                        imageView.setPadding(5, 5, 5, 5);
+                        imageViews[i] = imageView;
+                        if (i == 0) {
+                            imageViews[i]
+                                    .setBackgroundResource(R.drawable.indicator_focused);
+                        } else {
+                            imageViews[i]
+                                    .setBackgroundResource(R.drawable.indicator);
+                        }
+                        vg.addView(imageViews[i]);
+                    }
+                    vp.setAdapter(new ViewPagerAdapter(imgs));
+                    vp.setOnPageChangeListener(new GuidePageChangeListener(what,imageViews,tv_ch,tv_data));
+                    final Boolean[] isContinue = {true};
+                    vp.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View view, MotionEvent motionEvent) {
+                            switch (motionEvent.getAction()) {
+                                case MotionEvent.ACTION_DOWN:
+                                case MotionEvent.ACTION_MOVE:
+                                    isContinue[0] = false;
+                                    break;
+                                case MotionEvent.ACTION_UP:
+                                    isContinue[0] = true;
+                                    break;
+                                default:
+                                    isContinue[0] = true;
+                                    break;
+                            }
+                            return false;
+                        }
+                    });
+                    final Handler viewHandler = new Handler() {
+
+                        @Override
+                        public void handleMessage(Message msg) {
+                            vp.setCurrentItem(msg.what);
+                            super.handleMessage(msg);
+                        }
+
+                    };
+                    final ImageView[] finalImageViews = imageViews;
+                    new Thread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            while (true) {
+                                if (isContinue[0]) {
+                                    viewHandler.sendEmptyMessage(what.get());
+                                    //whatOption();
+                                    what.incrementAndGet();
+                                    if (what.get() > finalImageViews.length - 1) {
+                                        what.getAndAdd(-4);
+                                    }
+                                    try {
+                                        Thread.sleep(5000);
+                                    } catch (InterruptedException e) {
+
+                                    }
+                                }
+                            }
+                        }
+
+                    }).start();
+                    if(lv.getHeaderViewsCount()==0){
+                        lv.addHeaderView(header,url_data,true);
+                    }
                     lv.setAdapter(sa);
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            Toast.makeText(mActivity.getApplicationContext(), "正在努力加载中" + al.get(i).get("link") + "。。。。。 QAQ", Toast.LENGTH_SHORT).show();
+                            if(i==0){
+
+                            }
+                           // Toast.makeText(mActivity.getApplicationContext(), "正在努力加载中" + al.get(i-1).get("link") + "。。。。。 QAQ", Toast.LENGTH_SHORT).show();
                             Intent it = new Intent(mActivity, NewsPage.class);
                             Bundle bundle = new Bundle();
-                            bundle.putString("url", al.get(i).get("link"));
+                            bundle.putString("url", al.get(i-1).get("link"));
                             it.putExtras(bundle);
                             mActivity.startActivity(it);
 
@@ -689,6 +809,7 @@ public class JsonMaker {
                     });
                 }
             }
+
         });
 
     }

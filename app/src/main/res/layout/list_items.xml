@@ -7,6 +7,7 @@
     android:paddingBottom="4dip"
     >
     <ImageView
+        android:layout_marginLeft="20dp"
         android:id="@+id/thumb"
         android:layout_width="165px"
         android:layout_height="75px"
@@ -14,6 +15,7 @@
         android:scaleType="fitXY"
         />
     <ImageView
+        android:layout_marginLeft="10dp"
         android:id="@+id/like_img"
         android:layout_width="16dp"
         android:layout_height="16dp"
@@ -30,6 +32,8 @@
         />
 
     <TextView
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:text="@string/loading"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -55,6 +59,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/time"
         android:layout_alignParentRight="true"
+        android:paddingRight="10dp"
         android:layout_below="@+id/content"
         />
     <ImageView

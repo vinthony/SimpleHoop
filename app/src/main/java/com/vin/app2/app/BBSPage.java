@@ -13,10 +13,12 @@ public class BBSPage extends Activity {
         setContentView(R.layout.activity_bbspage);
         getActionBar().setBackgroundDrawable(this.getBaseContext().getResources().getDrawable(R.drawable.BackBar));
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setTitle(getIntent().getStringExtra("title"));
         getActionBar().show();
         String  url=getIntent().getStringExtra("url");
         JsonMaker jsonMaker = new JsonMaker("bbs_detail",url,BBSPage.this);
         jsonMaker.setJson();
+
     }
 
 

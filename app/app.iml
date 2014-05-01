@@ -73,6 +73,7 @@
     <orderEntry type="library" exported="" name="slidingmenu" level="project" />
     <orderEntry type="library" exported="" name="support-v13-19.0.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-19.0.1" level="project" />
+    <orderEntry type="library" exported="" name="android-smart-image-view-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.1-with-sources" level="project" />
     <orderEntry type="library" exported="" name="commons-httpclient-3.1" level="project" />
     <orderEntry type="library" exported="" name="support-v4-19.0.1" level="project" />

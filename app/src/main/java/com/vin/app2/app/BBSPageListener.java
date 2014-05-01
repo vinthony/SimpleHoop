@@ -22,6 +22,7 @@ public class BBSPageListener implements AdapterView.OnItemClickListener {
         //Toast.makeText(a.getApplicationContext(),m.get("href"),Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(a.getApplicationContext(),BBSPage.class);
         intent.putExtra("url",m.get("href"));
+        intent.putExtra("title",m.get("title"));
         a.startActivity(intent);
     }
 }
