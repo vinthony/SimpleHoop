@@ -7,7 +7,7 @@
     android:paddingBottom="4dip"
     >
     <ImageView
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="10dp"
         android:id="@+id/thumb"
         android:layout_width="165px"
         android:layout_height="75px"

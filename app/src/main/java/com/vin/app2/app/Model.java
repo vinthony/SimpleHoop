@@ -60,9 +60,9 @@ public class Model {
         a.put("url",url);
         return a;
     }
-    public static ArrayList<HashMap<String,String>> newsListModel(JSONArray jsonArr,ArrayList<HashMap<String,String>> al){
+    public static ArrayList<HashMap<String,String>> newsListModel(JSONArray jsonArr,ArrayList<HashMap<String,String>> al,int flag){
         try {
-            for (int i = 0; i < jsonArr.length(); i++) {
+            for (int i = flag; i < jsonArr.length(); i++) {
                 JSONObject o = (JSONObject) jsonArr.opt(i);
                 HashMap<String, String> m = new HashMap<String, String>();
                 m.put("title", o.getString("title"));
@@ -154,4 +154,5 @@ public class Model {
         }
         return al;
     }
+
 }

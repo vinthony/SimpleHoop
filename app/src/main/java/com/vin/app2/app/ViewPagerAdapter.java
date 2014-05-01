@@ -1,10 +1,13 @@
 package com.vin.app2.app;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,9 +15,12 @@ import java.util.List;
  */
 public  class ViewPagerAdapter extends PagerAdapter {
     private List<View> views = null;
-
-    public ViewPagerAdapter(List<View> views) {
+    private Activity mActivity = null;
+    private ArrayList<String> mData = new ArrayList<String>();
+    public ViewPagerAdapter(List<View> views,Activity activity,ArrayList<String> data) {
+        mActivity = activity;
         this.views = views;
+        mData = data;
     }
 
     @Override
@@ -33,9 +39,20 @@ public  class ViewPagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(View arg0, int arg1) {
-        ((ViewPager) arg0).addView(views.get(arg1), 0);
-        return views.get(arg1);
+    public Object instantiateItem(View arg0, final int arg1) {
+        //((ViewPager) arg0).addView(views.get(arg1), 0);
+        //return views.get(arg1);
+        View item = views.get(arg1);
+        item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mActivity,NewsPage.class);
+                intent.putExtra("url",mData.get(arg1));
+                mActivity.startActivity(intent);
+            }
+        });
+       ((ViewPager) arg0).addView(item);
+       return views.get(arg1);
     }
 
     @Override

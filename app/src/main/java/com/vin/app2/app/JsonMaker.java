@@ -661,21 +661,26 @@ public class JsonMaker {
     }
     private void getNewsList(String result,final Activity activity){
         JSONArray ja_gallery=null;
+        JSONArray jsonArr=null;
         try{
             if(flag.equals("bbs")){
                 JSONArray j = new JSONArray(result);
                 al=Model.bbsListModel(j);
             }else{
                 JSONObject j = new JSONObject(result);
-                JSONArray jsonArr = j.getJSONArray("news");
+                jsonArr = j.getJSONArray("news");
                 ja_gallery= j.getJSONArray("gallery");
-                al=Model.newsListModel(jsonArr,al);
+                //if(type.equals("hot"))
+                    al=Model.newsListModel(jsonArr,al,4);
+                //else
+                //    al=Model.newsListModel(jsonArr,al,0);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
        final ListView lv = (ListView)activity.findViewById(R.id.listView);
         final JSONArray finalJa_gallery = ja_gallery;
+        final JSONArray finalJsonArr = jsonArr;
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -691,31 +696,54 @@ public class JsonMaker {
                     final ViewPager vp = (ViewPager)header.findViewById(R.id.gallery);
                     ViewGroup vg = (ViewGroup)header.findViewById(R.id.viewGroup);
                     TextView tv_ch = (TextView)header.findViewById(R.id.description);
-                    if(finalJa_gallery.length()>0){
+                    List<View> imgs=new ArrayList<View>();
+                    ArrayList<String> tv_data=new ArrayList<String>();
+                    ArrayList<String> url_data = new ArrayList<String>();
+                    /*if(finalJa_gallery.length()>0){
                         JSONObject init =(JSONObject)finalJa_gallery.opt(0);
                         try {
                             tv_ch.setText(init.getString("title"));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                    }
-                    final JSONArray fl_gallery= finalJa_gallery;
-                    List<View> imgs = new ArrayList<View>();
-                    ArrayList<String> tv_data=new ArrayList<String>();
-                    ArrayList<String> url_data = new ArrayList<String>();
-                    for(int i =0 ;i<fl_gallery.length() ;i++ ){
-                        JSONObject o  = (JSONObject)fl_gallery.opt(i);
-                        try {
-                            SmartImageView smv =new SmartImageView(activity);
-                            smv.setImageUrl(o.getString("img"));
-                            smv.setScaleType(ImageView.ScaleType.FIT_XY);
-                            imgs.add(smv);
-                            tv_data.add(o.getString("title"));
-                            url_data.add(o.getString("url"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        final JSONArray fl_gallery= finalJa_gallery;
+                        for(int i =0 ;i<fl_gallery.length() ;i++ ){
+                            JSONObject o  = (JSONObject)fl_gallery.opt(i);
+                            try {
+                                SmartImageView smv =new SmartImageView(activity);
+                                smv.setImageUrl(o.getString("img"));
+                                smv.setScaleType(ImageView.ScaleType.FIT_XY);
+
+                                imgs.add(smv);
+                                tv_data.add(o.getString("title"));
+                                url_data.add(o.getString("url"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
+                    }else{
+                    */
+                         try {
+                             JSONObject init = (JSONObject)finalJsonArr.opt(0);
+                             tv_ch.setText(init.getString("title"));
+                             for (int i = 0; i<4;i++){
+                                 JSONObject o  = (JSONObject)finalJsonArr.opt(i);
+                                 try {
+                                     SmartImageView smv =new SmartImageView(activity);
+                                     smv.setImageUrl(o.getString("img"));
+                                     smv.setScaleType(ImageView.ScaleType.FIT_XY);
+                                     imgs.add(smv);
+                                     tv_data.add(o.getString("title"));
+                                     url_data.add(o.getString("link"));
+                                 } catch (JSONException e) {
+                                     e.printStackTrace();
+                                 }
+                             }
+                         }catch (Exception e){
+                             e.printStackTrace();
+                         }
+                    //}
+
                      ImageView[] imageViews = null;
                      ImageView imageView = null;
                      final AtomicInteger what = new AtomicInteger(0);
@@ -734,7 +762,7 @@ public class JsonMaker {
                         }
                         vg.addView(imageViews[i]);
                     }
-                    vp.setAdapter(new ViewPagerAdapter(imgs));
+                    vp.setAdapter(new ViewPagerAdapter(imgs,mActivity,url_data));
                     vp.setOnPageChangeListener(new GuidePageChangeListener(what,imageViews,tv_ch,tv_data));
                     final Boolean[] isContinue = {true};
                     vp.setOnTouchListener(new View.OnTouchListener() {
