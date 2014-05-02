@@ -3,6 +3,7 @@ package com.vin.app2.app;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+
+import java.sql.SQLException;
 
 
 public class BBS extends Activity implements ActionBar.OnNavigationListener {
@@ -115,7 +118,23 @@ public class BBS extends Activity implements ActionBar.OnNavigationListener {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.postMessage){
+            MyDBAdapter myDBAdapter = new MyDBAdapter(this);
+            try {
+                myDBAdapter.open();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            if(myDBAdapter.fetchAllData().getCount()>0){
+               Intent intent = new Intent(BBS.this,PostTopic.class);
+               intent.putExtra("item",getIntent().getStringExtra("type"));
+               intent.putExtra("subitem",getActionBar().getSelectedNavigationIndex()+"");
+               startActivity(intent);
+           }else{
+               Intent intent = new Intent(BBS.this,LoginActivity.class);
+               startActivity(intent);
+           }
+            myDBAdapter.close();
             return true;
         }
         return super.onOptionsItemSelected(item);

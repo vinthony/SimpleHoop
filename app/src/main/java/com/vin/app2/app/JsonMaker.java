@@ -292,14 +292,24 @@ public class JsonMaker {
     private void getBBSDetail(String result,final Activity a){
         try {
 
-            JSONArray j = new JSONArray(result);
-            final View x = a.getLayoutInflater().inflate(R.layout.bbs_firstitem,null);
-            final ArrayList<HashMap<String,String>> m = Model.BBSDetail(j);
+            JSONObject j = new JSONObject(result);
+            final View header = a.getLayoutInflater().inflate(R.layout.bbs_firstitem,null);
+            //final ArrayList<HashMap<String,String>> m = Model.BBSDetail(j);
+            final HashMap<String,String> main_detail = Model.BBSMainDetail(j);
+            final ArrayList<HashMap<String,String>> m = Model.BBSFloorDetail(j);
             final ListView lv = (ListView)a.findViewById(R.id.bbs_detail);
+            final ImageView m_img =(ImageView)header.findViewById(R.id.userImg);
+            final TextView  m_user=(TextView)header.findViewById(R.id.userName);
+            final TextView  m_content = (TextView)header.findViewById(R.id.content);
+            final TextView  m_title = (TextView)header.findViewById(R.id.title);
             a.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    lv.addHeaderView(x);
+                    ImageLoader.getInstance().displayImage(main_detail.get("userImg"),m_img);
+                    m_user.setText(main_detail.get("userName"));
+                    m_content.setText(Html.fromHtml(main_detail.get("content")));
+                    m_title.setText(main_detail.get("title"));
+                    lv.addHeaderView(header);
                     lv.setAdapter(new MyAdapter(a.getApplicationContext(),m,R.layout.bbs_item_floor,new String[]{"userName","userImg","content","admireNum","userInfo"},new int[]{R.id.userName,R.id.userImg,R.id.content,R.id.admireNum,R.id.userinfo}));
                 }
             });
@@ -694,6 +704,7 @@ public class JsonMaker {
                     MyAdapter sa = new MyAdapter(mActivity, al, R.layout.list_items, new String[]{"title", "content", "time", "photo", "commentNum", "admireNum"}, new int[]{R.id.title, R.id.content, R.id.time, R.id.thumb, R.id.commentNum, R.id.admireNum});
                     View header=activity.getLayoutInflater().inflate(R.layout.gallery,null);
                     final ViewPager vp = (ViewPager)header.findViewById(R.id.gallery);
+                    View footer = activity.getLayoutInflater().inflate(R.layout.footer,null);
                     ViewGroup vg = (ViewGroup)header.findViewById(R.id.viewGroup);
                     TextView tv_ch = (TextView)header.findViewById(R.id.description);
                     List<View> imgs=new ArrayList<View>();
@@ -762,6 +773,7 @@ public class JsonMaker {
                         }
                         vg.addView(imageViews[i]);
                     }
+
                     vp.setAdapter(new ViewPagerAdapter(imgs,mActivity,url_data));
                     vp.setOnPageChangeListener(new GuidePageChangeListener(what,imageViews,tv_ch,tv_data));
                     final Boolean[] isContinue = {true};
@@ -818,7 +830,9 @@ public class JsonMaker {
                     if(lv.getHeaderViewsCount()==0){
                         lv.addHeaderView(header,url_data,true);
                     }
+                    lv.addFooterView(footer);
                     lv.setAdapter(sa);
+                    lv.setOnScrollListener(new MyScrollListener(mActivity,footer,sa));
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

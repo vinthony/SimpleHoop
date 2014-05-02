@@ -140,19 +140,29 @@ public class Model {
         return al;
     }
 
-    public static ArrayList<HashMap<String, String>> BBSDetail(JSONArray j) throws JSONException{
+    public static HashMap<String,String> BBSMainDetail(JSONObject jo) throws JSONException{
+       JSONObject j =jo.getJSONObject("main");
+       HashMap<String,String> hashMap = new HashMap<String, String>();
+       hashMap.put("title",j.getString("title"));
+       hashMap.put("userName",j.getString("userName"));
+      // hashMap.put("time",j.getString("time"));
+       hashMap.put("content",j.getString("content"));
+       hashMap.put("userImg",j.getString("userImg"));
+       return hashMap;
+    }
+    public static ArrayList<HashMap<String,String>> BBSFloorDetail(JSONObject jo) throws JSONException{
+        JSONArray j = jo.getJSONArray("floors");
         ArrayList<HashMap<String,String>> al = new ArrayList<HashMap<String, String>>();
         for (int i=0;i<j.length();i++){
             JSONObject o = (JSONObject)j.opt(i);
             HashMap<String,String> m = new HashMap<String, String>();
-            m.put("userName",o.getString("userName"));
-            m.put("content",o.getString("content"));
-            m.put("userImg",o.getString("userImg"));
+            m.put("userName",o.getString("authorName"));
+            m.put("content",o.getString("contentText"));
+            m.put("userImg",o.getString("authorIMG"));
             m.put("admireNum",o.getString("admireNum"));
             m.put("userInfo",o.getString("time"));
             al.add(m);
         }
         return al;
     }
-
 }

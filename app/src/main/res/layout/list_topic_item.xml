@@ -5,22 +5,26 @@
     android:layout_height="match_parent">
     <TextView
         android:id="@+id/title"
+        android:textColor="@color/main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <TextView
         android:id="@+id/bbs"
+        android:textColor="@color/main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
         />
     <TextView
         android:id="@+id/time"
+        android:textColor="@color/main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/bbs"
         />
     <TextView
         android:id="@+id/info"
+        android:textColor="@color/main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/time"

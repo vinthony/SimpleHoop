@@ -46,5 +46,6 @@
     <string name="bbs_add"></string>
     <string name="title_activity_bbspage">BBSPage</string>
     <string name="RepeatBackKeyToExit">再按一次退出应用程序</string>
+    <string name="title_activity_post_topic">发布新帖子</string>
 
 </resources>

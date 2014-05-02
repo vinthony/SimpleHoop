@@ -5,15 +5,18 @@
     android:layout_height="match_parent">
     <TextView
         android:id="@+id/title"
+        android:textColor="@color/main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <TextView
         android:id="@+id/bbs"
+        android:textColor="@color/main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
         />
     <TextView
+        android:textColor="@color/main"
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,6 +24,7 @@
         />
     <TextView
         android:id="@+id/context"
+        android:textColor="@color/main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/time"

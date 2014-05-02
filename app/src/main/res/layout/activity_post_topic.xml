@@ -1,0 +1,28 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.vin.app2.app.PostTopic">
+
+    <EditText
+        android:id="@+id/title"
+        android:hint="在此输入帖子标题"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        />
+    <EditText
+        android:hint="在此处输入内容"
+        android:id="@+id/content"
+        android:inputType="textMultiLine"
+        android:gravity="left|top"
+        android:minLines="6"
+        android:layout_below="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp" />
+
+</RelativeLayout>

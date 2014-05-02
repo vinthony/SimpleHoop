@@ -54,8 +54,12 @@
             android:label="@string/title_activity_bbs" >
         </activity>
         <activity
-            android:name=".BBSPage"
+            android:name="com.vin.app2.app.BBSPage"
             android:label="@string/title_activity_bbspage" >
+        </activity>
+        <activity
+            android:name="com.vin.app2.app.PostTopic"
+            android:label="@string/title_activity_post_topic" >
         </activity>
     </application>
 

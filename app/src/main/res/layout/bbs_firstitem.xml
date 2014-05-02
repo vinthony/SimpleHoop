@@ -1,10 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/userImg"
+        android:layout_below="@+id/line"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
     <TextView
         android:text="@string/loading"
+        android:id="@+id/title"
+        android:textSize="24sp"
+        android:layout_marginTop="5sp"
+        android:layout_marginBottom="5sp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
-</LinearLayout>
+    <View
+        android:layout_marginBottom="5px"
+        android:layout_marginTop="5px"
+        android:id="@+id/line"
+        android:layout_below="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="@color/hupo" >
+    </View>
+    <TextView
+        android:layout_marginTop="10sp"
+        android:id="@+id/content"
+        android:layout_below="@+id/userImg"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_toRightOf="@+id/userImg"
+        android:layout_below="@+id/line"
+        android:layout_marginLeft="10sp"
+        android:id="@+id/userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

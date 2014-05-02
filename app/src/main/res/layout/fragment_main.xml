@@ -12,6 +12,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/listView"
+            android:textColor="@color/main"
             android:scrollbars="none"
             android:layout_centerHorizontal="true" />
     </com.vin.app2.app.RefreshableView>

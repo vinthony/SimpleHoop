@@ -9,6 +9,7 @@
     tools:context="com.vin.app2.app.UserTopic$TabFragment">
 
     <ListView
+        android:textColor="@color/main"
         android:id="@+id/user_topic"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"/>
