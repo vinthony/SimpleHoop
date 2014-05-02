@@ -71,7 +71,12 @@ public class JsonMaker {
     private int reply_id=0;
     private int reply_floor=0;
     private String [] bbsArray =new String[]{};
+    private String mTid="";
+    private String mPid="";
+    private String mAuthorid = "";
+    private String mFid = "";
     private View rootView;
+    private View itemView;
     private String webServerUrl="http://hupoapi.sinaapp.com/sandBox.php?";
     private HashMap<String, String> params = new HashMap<String, String>();
     private ArrayList<HashMap<String, String>> al = new ArrayList<HashMap<String, String>>();
@@ -148,10 +153,38 @@ public class JsonMaker {
         Tools.imageInit(a.getApplicationContext());
     }
 
+    public JsonMaker(String oitem, String tid, String pid, String authorid, String fid,View v,Activity mA) {
+        mActivity=mA;
+        item=oitem;
+        mTid=tid;
+        mPid=pid;
+        mAuthorid = authorid;
+        mFid = fid;
+        itemView=v;
+        MyDBAdapter myDBAdapter = new MyDBAdapter(mA.getApplicationContext());
+        try {
+            myDBAdapter.open();
+            if(myDBAdapter.isLogin()){
+                sign=myDBAdapter.fetchData(1).getString(1);
+            }else{
+                //todo
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        myDBAdapter.close();
+        params.put("sign",sign);
+        params.put("item",item);
+        params.put("tid",mTid);
+        params.put("pid",mPid);
+        params.put("authorid",mAuthorid);
+        params.put("fid",mFid);
+    }
+
     public enum ITEMS{
         VOICE,BBS,PAGE,APAGE,LOGIN,LOGED,MYPAGE,UNDEFINED,COMMENT,SUPPORT,ADDCOMMENT,USER_MAIN,
         USER_TOPIC,USER_POST,USER_TOPIC_MAIN,USER_TOPIC_RE,USER_TOPIC_FAV,MY_BBS_ITEMS,BBS_ITEM,
-        BBS_DETAIL
+        BBS_DETAIL,LIGHT
     }
     public JsonMaker(String oitem,String si,String ux,Activity a){
        switch (ITEMS.valueOf(oitem.toUpperCase())){
@@ -269,6 +302,9 @@ public class JsonMaker {
                                     case BBS_DETAIL:
                                         getBBSDetail(result,mActivity);
                                         break;
+                                    case LIGHT:
+                                        dealLight(result,mActivity);
+                                        break;
 
                                 }
                             }else{
@@ -289,14 +325,29 @@ public class JsonMaker {
 
         ).start();
     }
+    private void dealLight(final String result,final Activity a){
+            a.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                if(Integer.parseInt(result)>0){
+                    Toast.makeText(a,"点亮成功",Toast.LENGTH_SHORT).show();
+                    TextView tv=(TextView)itemView.findViewById(R.id.admireNum);
+                    tv.setText(result);
+                }else{
+                    Toast.makeText(a,"您已经赞过或服务器传送失败，请重新试",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+            });
+            }
     private void getBBSDetail(String result,final Activity a){
         try {
-
             JSONObject j = new JSONObject(result);
             final View header = a.getLayoutInflater().inflate(R.layout.bbs_firstitem,null);
             //final ArrayList<HashMap<String,String>> m = Model.BBSDetail(j);
             final HashMap<String,String> main_detail = Model.BBSMainDetail(j);
             final ArrayList<HashMap<String,String>> m = Model.BBSFloorDetail(j);
+            final HashMap<String,String> d = Model.BBSInfoDetail(j);
             final ListView lv = (ListView)a.findViewById(R.id.bbs_detail);
             final ImageView m_img =(ImageView)header.findViewById(R.id.userImg);
             final TextView  m_user=(TextView)header.findViewById(R.id.userName);
@@ -311,10 +362,12 @@ public class JsonMaker {
                     m_title.setText(main_detail.get("title"));
                     lv.addHeaderView(header);
                     lv.setAdapter(new MyAdapter(a.getApplicationContext(),m,R.layout.bbs_item_floor,new String[]{"userName","userImg","content","admireNum","userInfo"},new int[]{R.id.userName,R.id.userImg,R.id.content,R.id.admireNum,R.id.userinfo}));
+                    lv.setOnItemClickListener(new MyBBSItemClickListener(a,m,d));
                 }
             });
         }catch (Exception e){
-            e.printStackTrace();
+            //todo 没有判断界面不存在的情况
+           Toast.makeText(a,"您所访问的界面不存在",Toast.LENGTH_LONG).show();
         }
     }
     private void getSubBBSItem(String result,final Activity a){
@@ -386,13 +439,14 @@ public class JsonMaker {
                             new ActionBar.OnNavigationListener() {
                                 @Override
                                 public boolean onNavigationItemSelected(int i, long l) {
-                                   // return false;
+                                    // return false;
                                     mActivity.getFragmentManager().beginTransaction()
                                             .replace(R.id.container, BBS.PlaceholderFragment.newInstance(i + 1))
                                             .commit();
                                     return true;
                                 }
-                            });
+                            }
+                    );
 
                 }
             });
@@ -409,6 +463,16 @@ public class JsonMaker {
                 @Override
                 public void run() {
                     lv.setAdapter(new MyAdapter(a.getApplicationContext(), m, R.layout.list_topic_item, new String[]{"title", "bbs", "time", "context"}, new int[]{R.id.title, R.id.bbs, R.id.time, R.id.context}));
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            HashMap<String,String> temp =m.get((int)l);
+                            Intent intent = new Intent(a,BBSPage.class);
+                            intent.putExtra("title",temp.get("title"));
+                            intent.putExtra("url",temp.get("link"));
+                            a.startActivity(intent);
+                        }
+                    });
                 }
             });
         }catch (Exception e){
@@ -425,6 +489,16 @@ public class JsonMaker {
                 @Override
                 public void run() {
                     lv_main.setAdapter(new MyAdapter(a.getApplicationContext(), m, R.layout.list_topic_item, new String[]{"title", "bbs", "time", "context"}, new int[]{R.id.title, R.id.bbs, R.id.time, R.id.context}));
+                    lv_main.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            HashMap<String,String> temp =m.get((int)l);
+                            Intent intent = new Intent(a,BBSPage.class);
+                            intent.putExtra("title",temp.get("title"));
+                            intent.putExtra("url",temp.get("link"));
+                            a.startActivity(intent);
+                        }
+                    });
                 }
             });
         }catch (Exception e){
@@ -441,6 +515,16 @@ public class JsonMaker {
                 @Override
                 public void run() {
                     lv_main.setAdapter(new MyAdapter(a.getApplicationContext(), m, R.layout.list_re_topic_item, new String[]{"title", "bbs", "time", "context"}, new int[]{R.id.title, R.id.bbs, R.id.time, R.id.context}));
+                    lv_main.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            HashMap<String,String> temp =m.get((int)l);
+                            Intent intent = new Intent(a,BBSPage.class);
+                            intent.putExtra("title",temp.get("title"));
+                            intent.putExtra("url",temp.get("link"));
+                            a.startActivity(intent);
+                        }
+                    });
                 }
             });
 

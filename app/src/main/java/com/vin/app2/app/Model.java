@@ -161,8 +161,19 @@ public class Model {
             m.put("userImg",o.getString("authorIMG"));
             m.put("admireNum",o.getString("admireNum"));
             m.put("userInfo",o.getString("time"));
+            m.put("sub_page",o.getString("noFollowLink"));
+            m.put("pid",o.getString("pid"));
+            m.put("authorid",o.getString("authorid"));
             al.add(m);
         }
         return al;
+    }
+
+    public static HashMap<String, String> BBSInfoDetail(JSONObject jo) throws JSONException{
+        HashMap<String,String> jm=new HashMap<String, String>();
+        JSONObject j = jo.getJSONObject("common");
+         jm.put("fid",j.getString("fid"));
+         jm.put("tid",j.getString("tid"));
+        return jm;
     }
 }
