@@ -181,10 +181,36 @@ public class JsonMaker {
         params.put("fid",mFid);
     }
 
+    public JsonMaker(String oitem, String res, String tid, String fid, Activity a) {
+        mActivity=a;
+        item=oitem;
+        mTid=tid;
+        mFid=fid;
+
+        MyDBAdapter myDBAdapter = new MyDBAdapter(a.getApplicationContext());
+        try {
+            myDBAdapter.open();
+            if(myDBAdapter.isLogin()){
+                sign=myDBAdapter.fetchData(1).getString(1);
+            }else{
+                //todo
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        myDBAdapter.close();
+        params.put("content",res);
+        params.put("item",item);
+        params.put("tid",mTid);
+        params.put("fid",mFid);
+        params.put("sign",sign);
+
+    }
+
     public enum ITEMS{
         VOICE,BBS,PAGE,APAGE,LOGIN,LOGED,MYPAGE,UNDEFINED,COMMENT,SUPPORT,ADDCOMMENT,USER_MAIN,
         USER_TOPIC,USER_POST,USER_TOPIC_MAIN,USER_TOPIC_RE,USER_TOPIC_FAV,MY_BBS_ITEMS,BBS_ITEM,
-        BBS_DETAIL,LIGHT
+        BBS_DETAIL,LIGHT,BBS_COMMENT
     }
     public JsonMaker(String oitem,String si,String ux,Activity a){
        switch (ITEMS.valueOf(oitem.toUpperCase())){
@@ -305,6 +331,8 @@ public class JsonMaker {
                                     case LIGHT:
                                         dealLight(result,mActivity);
                                         break;
+                                    case BBS_COMMENT:
+                                        dealBBSComment(result,mActivity);
 
                                 }
                             }else{
@@ -324,6 +352,9 @@ public class JsonMaker {
                 }
 
         ).start();
+    }
+    private void dealBBSComment(final String result,final Activity a){
+
     }
     private void dealLight(final String result,final Activity a){
             a.runOnUiThread(new Runnable() {
@@ -349,20 +380,34 @@ public class JsonMaker {
             final ArrayList<HashMap<String,String>> m = Model.BBSFloorDetail(j);
             final HashMap<String,String> d = Model.BBSInfoDetail(j);
             final ListView lv = (ListView)a.findViewById(R.id.bbs_detail);
+
             final ImageView m_img =(ImageView)header.findViewById(R.id.userImg);
             final TextView  m_user=(TextView)header.findViewById(R.id.userName);
             final TextView  m_content = (TextView)header.findViewById(R.id.content);
             final TextView  m_title = (TextView)header.findViewById(R.id.title);
+            final ImageButton ib = (ImageButton)a.findViewById(R.id.sendMessage);
+            final EditText ed   = (EditText)a.findViewById(R.id.commentET);
             a.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+
                     ImageLoader.getInstance().displayImage(main_detail.get("userImg"),m_img);
                     m_user.setText(main_detail.get("userName"));
-                    m_content.setText(Html.fromHtml(main_detail.get("content")));
+                    header.setClickable(false);
+                    NetworkImageGetter p =new NetworkImageGetter(a,m_content);
+                    m_content.setText(Html.fromHtml(main_detail.get("content"),p,null));
                     m_title.setText(main_detail.get("title"));
                     lv.addHeaderView(header);
                     lv.setAdapter(new MyAdapter(a.getApplicationContext(),m,R.layout.bbs_item_floor,new String[]{"userName","userImg","content","admireNum","userInfo"},new int[]{R.id.userName,R.id.userImg,R.id.content,R.id.admireNum,R.id.userinfo}));
                     lv.setOnItemClickListener(new MyBBSItemClickListener(a,m,d));
+                    ib.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String res = String.valueOf(ed.getText());
+                            JsonMaker jsonMaker = new JsonMaker("bbs_comment",res,d.get("tid"),d.get("fid"),a);
+                            jsonMaker.setJson();
+                        }
+                    });
                 }
             });
         }catch (Exception e){
@@ -492,10 +537,10 @@ public class JsonMaker {
                     lv_main.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            HashMap<String,String> temp =m.get((int)l);
-                            Intent intent = new Intent(a,BBSPage.class);
-                            intent.putExtra("title",temp.get("title"));
-                            intent.putExtra("url",temp.get("link"));
+                            HashMap<String, String> temp = m.get((int) l);
+                            Intent intent = new Intent(a, BBSPage.class);
+                            intent.putExtra("title", temp.get("title"));
+                            intent.putExtra("url", temp.get("link"));
                             a.startActivity(intent);
                         }
                     });
@@ -508,7 +553,6 @@ public class JsonMaker {
     private void getUserTopicRe(String result,final Activity a){
         try{
             final JSONArray j = new JSONArray(result);
-           // Fragment f= a.getFragmentManager().findFragmentById(R.layout.fragment_user_topic);
             final ArrayList<HashMap<String,String>> m = Model.userTopicReModel(j);
            final ListView lv_main =(ListView)rootView.findViewById(R.id.user_topic);
             a.runOnUiThread(new Runnable() {
@@ -652,7 +696,7 @@ public class JsonMaker {
             final TextView tv_userinfo = (TextView)a.findViewById(R.id.userinfo);
             final ImageView iv_userImg =(ImageView)a.findViewById(R.id.userImg);
             final Button btn_topic = (Button)a.findViewById(R.id.topic_button);
-
+            final Button btn_out =(Button)a.findViewById(R.id.logout);
             final HashMap<String,String> hm = Model.userInfoModel(j);
 
             final ArrayList<HashMap<String,String>> recentNews=Model.recentNewsModel(j);
@@ -666,10 +710,26 @@ public class JsonMaker {
                             mActivity.startActivity(i);
                         }
                     });
+                    btn_out.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            MyDBAdapter dbAdapter = new MyDBAdapter(mActivity);
+                            try {
+                                dbAdapter.open();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            dbAdapter.deleteData(1);
+                            dbAdapter.close();
+                            Intent i = new Intent(mActivity,MainActivity.class);
+                            mActivity.startActivity(i);
+                        }
+                    });
                     tv_userName.setText(hm.get("username"));
                     tv_pageCount.setText(hm.get("pageCount"));
                     tv_userinfo.setText(Html.fromHtml(hm.get("userinfo")));
                     ImageLoader.getInstance().displayImage(hm.get("img"),iv_userImg);
+
                     //lv_recentNews.setAdapter(new MyAdapter(a.getApplicationContext(),recentNews,R.layout.list_recent_news_item,new String[]{"userImg","username","type","content"},new int[]{R.id.userImg,R.id.userName,R.id.type,R.id.content}));
 
                 }
@@ -994,6 +1054,7 @@ public class JsonMaker {
         return isLog;
     }
     class MyAdapter extends SimpleAdapter{
+        private Context context;
         public MyAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
             super(context, data, resource, from, to);
         }
@@ -1001,13 +1062,11 @@ public class JsonMaker {
             v.setImageResource(R.drawable.no_image);
             ImageLoader.getInstance().displayImage(value, v);
         }
-
         @Override
         public void setViewText(TextView v, String text) {
-            v.setText(Html.fromHtml(text));
+            NetworkImageGetter imgGetter = new NetworkImageGetter(context,v);
+            v.setText(Html.fromHtml(text,imgGetter,null));
         }
-
-        //public void setViewTest
     }
 
 }

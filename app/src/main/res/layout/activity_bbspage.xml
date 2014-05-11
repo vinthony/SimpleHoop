@@ -2,11 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
     tools:context="com.vin.app2.app.BBSPage">
 
     <com.vin.app2.app.RefreshableView
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="50dp"
         android:id="@+id/refreshable_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
@@ -19,5 +20,26 @@
 
 
     </com.vin.app2.app.RefreshableView>
-
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/abc_action_bar_default_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/hupo"
+        >
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="增加评论"
+            android:id="@+id/commentET"
+            />
+        <ImageButton
+            android:layout_toRightOf="@+id/commentET"
+            android:id="@+id/sendMessage"
+            android:background="#00000000"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_email_send"
+            android:layout_alignParentRight="true"
+            />
+    </RelativeLayout>
 </RelativeLayout>

@@ -50,7 +50,12 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             />
-
+        <Button
+            android:id="@+id/logout"
+            android:text="登出"
+            android:layout_below="@+id/post_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
     </RelativeLayout>
     </ScrollView>
 
