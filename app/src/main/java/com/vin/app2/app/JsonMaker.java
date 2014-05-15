@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.loopj.android.image.SmartImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.vin.app2.app.view.XListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -259,6 +260,9 @@ public class JsonMaker {
         Tools.imageInit(a.getApplicationContext());
 
     }
+    public void setPage(int page){
+        params.put("page",page+"");
+    }
     public void setFlag(String f){
         flag=f;
     }
@@ -374,42 +378,55 @@ public class JsonMaker {
     private void getBBSDetail(String result,final Activity a){
         try {
             JSONObject j = new JSONObject(result);
-            final View header = a.getLayoutInflater().inflate(R.layout.bbs_firstitem,null);
-            //final ArrayList<HashMap<String,String>> m = Model.BBSDetail(j);
-            final HashMap<String,String> main_detail = Model.BBSMainDetail(j);
-            final ArrayList<HashMap<String,String>> m = Model.BBSFloorDetail(j);
-            final HashMap<String,String> d = Model.BBSInfoDetail(j);
-            final ListView lv = (ListView)a.findViewById(R.id.bbs_detail);
+            final View header = a.getLayoutInflater().inflate(R.layout.bbs_firstitem, null);
+            final XListView lv = (XListView) a.findViewById(R.id.bbs_detail);
+            final ImageView m_img = (ImageView) header.findViewById(R.id.userImg);
+            final TextView m_user = (TextView) header.findViewById(R.id.userName);
+            final TextView m_content = (TextView) header.findViewById(R.id.content);
+            final TextView m_title = (TextView) header.findViewById(R.id.title);
+            final ImageButton ib = (ImageButton) a.findViewById(R.id.sendMessage);
+            final EditText ed = (EditText) a.findViewById(R.id.commentET);
+            final ArrayList<HashMap<String,String>> m =Model.BBSFloorDetail(j);
+            final MyAdapter myAdapter = new MyAdapter(a.getApplicationContext(), m, R.layout.bbs_item_floor, new String[]{"userName", "userImg", "content", "admireNum", "userInfo"}, new int[]{R.id.userName, R.id.userImg, R.id.content, R.id.admireNum, R.id.userinfo});
+            if(flag.equals("loadMore")){
+               a.runOnUiThread(new Runnable() {
+                   @Override
+                   public void run() {
+                      lv.getAdapter().getCount();
 
-            final ImageView m_img =(ImageView)header.findViewById(R.id.userImg);
-            final TextView  m_user=(TextView)header.findViewById(R.id.userName);
-            final TextView  m_content = (TextView)header.findViewById(R.id.content);
-            final TextView  m_title = (TextView)header.findViewById(R.id.title);
-            final ImageButton ib = (ImageButton)a.findViewById(R.id.sendMessage);
-            final EditText ed   = (EditText)a.findViewById(R.id.commentET);
-            a.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+                      lv.setAdapter(myAdapter);
+                      myAdapter.notifyDataSetChanged();
+                   }
+               });
+            }else {
+                final HashMap<String, String> main_detail = Model.BBSMainDetail(j);
+                final HashMap<String, String> d = Model.BBSInfoDetail(j);
 
-                    ImageLoader.getInstance().displayImage(main_detail.get("userImg"),m_img);
-                    m_user.setText(main_detail.get("userName"));
-                    header.setClickable(false);
-                    NetworkImageGetter p =new NetworkImageGetter(a,m_content);
-                    m_content.setText(Html.fromHtml(main_detail.get("content"),p,null));
-                    m_title.setText(main_detail.get("title"));
-                    lv.addHeaderView(header);
-                    lv.setAdapter(new MyAdapter(a.getApplicationContext(),m,R.layout.bbs_item_floor,new String[]{"userName","userImg","content","admireNum","userInfo"},new int[]{R.id.userName,R.id.userImg,R.id.content,R.id.admireNum,R.id.userinfo}));
-                    lv.setOnItemClickListener(new MyBBSItemClickListener(a,m,d));
-                    ib.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            String res = String.valueOf(ed.getText());
-                            JsonMaker jsonMaker = new JsonMaker("bbs_comment",res,d.get("tid"),d.get("fid"),a);
-                            jsonMaker.setJson();
-                        }
-                    });
-                }
-            });
+                a.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        ImageLoader.getInstance().displayImage(main_detail.get("userImg"), m_img);
+                        m_user.setText(main_detail.get("userName"));
+                        header.setClickable(false);
+                        NetworkImageGetter p = new NetworkImageGetter(a, m_content);
+                        m_content.setText(Html.fromHtml(main_detail.get("content"), p, null));
+                        m_title.setText(main_detail.get("title"));
+                        lv.addHeaderView(header);
+                        lv.setAdapter(myAdapter);
+
+                        lv.setOnItemClickListener(new MyBBSItemClickListener(a, m, d));
+                        ib.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                String res = String.valueOf(ed.getText());
+                                JsonMaker jsonMaker = new JsonMaker("bbs_comment", res, d.get("tid"), d.get("fid"), a);
+                                jsonMaker.setJson();
+                            }
+                        });
+                    }
+                });
+            }
         }catch (Exception e){
             //todo 没有判断界面不存在的情况
            Toast.makeText(a,"您所访问的界面不存在",Toast.LENGTH_LONG).show();

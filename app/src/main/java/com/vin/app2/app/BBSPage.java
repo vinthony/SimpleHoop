@@ -5,8 +5,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class BBSPage extends Activity {
+import com.vin.app2.app.view.XListView;
 
+public class BBSPage extends Activity implements XListView.IXListViewListener {
+    private int pageCount=2;
+    private XListView xListView;
+    private Boolean loaded=true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -15,6 +19,10 @@ public class BBSPage extends Activity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setTitle(getIntent().getStringExtra("title"));
         getActionBar().show();
+        xListView = (XListView)findViewById(R.id.bbs_detail);
+        xListView.setPullLoadEnable(true);
+        xListView.setPullRefreshEnable(false);
+        xListView.setXListViewListener(this);
         String  url=getIntent().getStringExtra("url");
         JsonMaker jsonMaker = new JsonMaker("bbs_detail",url,BBSPage.this);
         jsonMaker.setJson();
@@ -32,14 +40,33 @@ public class BBSPage extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+    private void onLoad() {
+        loaded=true;
+        xListView.stopRefresh();
+        xListView.stopLoadMore();
+        xListView.setRefreshTime("刚刚");
+        pageCount++;
+    }
 
+    @Override
+    public void onRefresh() {}
+
+    @Override
+    public void onLoadMore() {
+        if(loaded){
+            loaded=false;
+            String  url=getIntent().getStringExtra("url");
+            JsonMaker jsonMaker = new JsonMaker("bbs_detail",url,BBSPage.this);
+            jsonMaker.setFlag("loadMore");
+            jsonMaker.setPage(pageCount);
+            jsonMaker.setJson();
+            onLoad();
+        }
+    }
 }

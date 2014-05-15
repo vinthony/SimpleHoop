@@ -12,17 +12,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import com.vin.app2.app.view.XListView;
+
 import java.sql.SQLException;
 
 
-public class BBS extends Activity implements ActionBar.OnNavigationListener {
+public class BBS extends Activity implements ActionBar.OnNavigationListener,XListView.IXListViewListener {
 
     /**
      * The serialization (saved instance state) Bundle key representing the
      * current dropdown position.
      */
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
-
+    String [] list={};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +39,6 @@ public class BBS extends Activity implements ActionBar.OnNavigationListener {
         getActionBar().show();
         actionBar.setTitle(getResources().getStringArray(R.array.bbs_items)[getIntent().getIntExtra("type",0)]);
         int type=getIntent().getIntExtra("type",0);
-        String [] list={};
         switch (type){
             case 4:
                 list=getResources().getStringArray(R.array.bbs_ganbiya_items);
@@ -148,6 +149,17 @@ public class BBS extends Activity implements ActionBar.OnNavigationListener {
                 .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                 .commit();
         return true;
+    }
+
+    @Override
+    public void onRefresh() {
+        JsonMaker jsonMaker=new JsonMaker("my_bbs_items",BBS.this);
+        jsonMaker.setJson();
+    }
+
+    @Override
+    public void onLoadMore() {
+
     }
 
     /**
